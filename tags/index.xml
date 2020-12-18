@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on 👋</title>
+    <link>https://hbenbel.github.io/tags/</link>
+    <description>Recent content in Tags on 👋</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Hussem Ben Belgacem</copyright>
+    <lastBuildDate>Fri, 18 Dec 2020 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>algorithm</title>
+      <link>https://hbenbel.github.io/tags/algorithm/</link>
+      <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cocktail party problem</title>
+      <link>https://hbenbel.github.io/tags/cocktail-party-problem/</link>
+      <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/cocktail-party-problem/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>independent component analysis</title>
+      <link>https://hbenbel.github.io/tags/independent-component-analysis/</link>
+      <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/independent-component-analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>machine learning</title>
+      <link>https://hbenbel.github.io/tags/machine-learning/</link>
+      <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/machine-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>computer vision</title>
+      <link>https://hbenbel.github.io/tags/computer-vision/</link>
+      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/computer-vision/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>deep learning</title>
+      <link>https://hbenbel.github.io/tags/deep-learning/</link>
+      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/deep-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>object detection</title>
+      <link>https://hbenbel.github.io/tags/object-detection/</link>
+      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/object-detection/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>object identification</title>
+      <link>https://hbenbel.github.io/tags/object-identification/</link>
+      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/object-identification/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>object tracking</title>
+      <link>https://hbenbel.github.io/tags/object-tracking/</link>
+      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/object-tracking/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

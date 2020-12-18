@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>object identification on 👋</title>
+    <link>https://hbenbel.github.io/tags/object-identification/</link>
+    <description>Recent content in object identification on 👋</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Hussem Ben Belgacem</copyright>
+    <lastBuildDate>Wed, 16 Dec 2020 23:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/tags/object-identification/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Identity Tracker</title>
+      <link>https://hbenbel.github.io/project/identity-tracker/</link>
+      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/project/identity-tracker/</guid>
+      <description>Coming Soon </description>
+    </item>
+    
+  </channel>
+</rss>
