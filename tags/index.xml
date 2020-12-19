@@ -44,50 +44,5 @@
       <description></description>
     </item>
     
-    <item>
-      <title>computer vision</title>
-      <link>https://hbenbel.github.io/tags/computer-vision/</link>
-      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/computer-vision/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>deep learning</title>
-      <link>https://hbenbel.github.io/tags/deep-learning/</link>
-      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/deep-learning/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>object detection</title>
-      <link>https://hbenbel.github.io/tags/object-detection/</link>
-      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/object-detection/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>object identification</title>
-      <link>https://hbenbel.github.io/tags/object-identification/</link>
-      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/object-identification/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>object tracking</title>
-      <link>https://hbenbel.github.io/tags/object-tracking/</link>
-      <pubDate>Wed, 16 Dec 2020 23:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/object-tracking/</guid>
-      <description></description>
-    </item>
-    
   </channel>
 </rss>
