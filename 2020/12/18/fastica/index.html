@@ -95,7 +95,7 @@
     </p>
     
         <p class="post-reading post-line">
-            <span>Estimated reading time: 3 min</span>
+            <span>Estimated reading time: 7 min</span>
         </p>
     
 </header>
@@ -129,6 +129,10 @@ Non-Gaussianity can be defined as a high/low level of spikiness of a distributio
 
 <p><span  class="math">\[kurtosis(x) = E\{{x}^{4}\} - 3{(E\{{x}^{2}\})}^{2}\]</span></p>
 
+<p>If we assume that <span  class="math">\(x\)</span> is a zero mean and unit variance variable, kurtosis becomes:</p>
+
+<p><span  class="math">\[kurtosis(x) = E\{{x}^{4}\} - 3\]</span></p>
+
 <p><strong>Kurtosis measure</strong> is positive if the distribution is spikier than Gaussian and negative if it is flatter. The non-Gaussianity can therefore be measured by computing the absolute value of the Kurtosis measure.</p>
 
 <p><center><figure class="aligncenter">
@@ -140,29 +144,212 @@ Non-Gaussianity can be defined as a high/low level of spikiness of a distributio
 </center></p>
 
 <p>However, this measure is extremely sensitive to outliers and is not a robust way to determine the non-Gaussianity of a distribution.<br>
-According to the <strong>Central limit theorem</strong>, when independent random variables are added, their normalized sum tends toward a Gaussian distribution. We can use this theorem to define the Gaussianity of a distribution in terms of entropy, the distribution with the highest entropy being the Gaussian distribution. The entropy of a random variable <span  class="math">\(y\)</span> with the density function <span  class="math">\(p(y)\)</span> is defined as follow:</p>
+According to the <strong>central limit theorem</strong>, when independent random variables are added, their normalized sum tends toward a Gaussian distribution. We can use this theorem to define the Gaussianity of a distribution in terms of entropy, the distribution with the highest entropy being the Gaussian distribution. The entropy of a random variable <span  class="math">\(y\)</span> with the density function <span  class="math">\(p(y)\)</span> is defined as follow:</p>
 
 <p><span  class="math">\[H(y) = -\int_{-\infty}^{\infty}p(y)\log{p(y)}dy = -E\{\log{p_{i}(y)}\}\]</span></p>
 
-<p>Based on the property of the Gaussian distribution in terms of entropy and on the above definition of the entropy, we can define the <em>negentropy</em> as follow:</p>
+<p>Based on the property of the Gaussian distribution in terms of entropy and on the above definition of the entropy, we can define the <strong>negentropy</strong> as follow:</p>
 
 <p><span  class="math">\[J(y) = H(y_{G}) - H(y)\]</span></p>
 
 <p>where <span  class="math">\(y_{G}\)</span> is a Gaussian variable with the same variance as <span  class="math">\(y\)</span>.<br>
-Gaussian distribution being the distribution with the highest entropy, <span  class="math">\(H(y_{G})\)</span> &gt; <span  class="math">\(H(y)\)</span> with the assumption that <span  class="math">\(y\)</span> is not Gaussian (which is the case in the cocktail party problem). Therefore, to find the most non-Gaussian <span  class="math">\(y\)</span> we have to maximize <span  class="math">\(J(y)\)</span>. However, we can't directly maximize the negentropy as in practice the density function <span  class="math">\(p(y)\)</span> is unknown. Instead, we try to <strong>maximize an approximation of the negentropy</strong>. The approximation used for the FastICA algorithm is the following:</p>
+Gaussian distribution being the distribution with the highest entropy, <span  class="math">\(H(y_{G})\)</span> &gt; <span  class="math">\(H(y)\)</span> with the assumption that <span  class="math">\(y\)</span> is not Gaussian (which is the case in the cocktail party problem). Therefore, to find the most non-Gaussian <span  class="math">\(y\)</span> we have to maximize <span  class="math">\(J(y)\)</span>. However, in practice we can't directly maximize the negentropy as it is computationally expensive. Instead, we try to <strong>maximize an approximation of the negentropy</strong>. The negentropy approximation used by FastICA is the following:</p>
 
 <p><span  class="math">\[J(y) \approx [E\{G(y)\} - E\{G(g)\}]^2\]</span></p>
 
 <p>where <span  class="math">\(G\)</span> is a non-quadratic function, <span  class="math">\(y\)</span> a zero mean and unit variance variable and <span  class="math">\(g\)</span> a Gaussian zero mean and unit variance variable. In the case of FastICA, <span  class="math">\(G(x) = \log\cosh(x)\)</span>.<br>
 Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just have to maximize <span  class="math">\(E\{G(y)\}\)</span> in order to maximize <span  class="math">\(J(y)\)</span>. That's where FastICA comes into play !</p>
 
-<h1 id="fastica-coming-soon">FastICA (Coming Soon)</h1>
+<h1 id="fastica">FastICA</h1>
+
+<p>Let <span  class="math">\(X\)</span> be the input data matrix of size <span  class="math">\(N\)</span> x <span  class="math">\(M\)</span>, <span  class="math">\(w\)</span> a weight vector of size <span  class="math">\(N\)</span> and <span  class="math">\(C\)</span> the number of components. We want to find the matrix <span  class="math">\(W\)</span> of size <span  class="math">\(N\)</span> x <span  class="math">\(C\)</span> that will project <span  class="math">\(X\)</span> onto independent component (i.e. <span  class="math">\(W^{T}X =\)</span> matrix with independent components).</p>
+
+<p>For FastICA to work we need to make sure that <span  class="math">\(E\{XX^{T}\} = I\)</span>. We accomplish this by centering and whitening the input data matrix <span  class="math">\(X\)</span>. To center <span  class="math">\(X\)</span>, we subtract to each of its column the mean value of the column:</p>
+
+<p><span  class="math">\[x_{ij} = x_{ij} - \frac{1}{M}\sum_{k}x_{ik}\]</span></p>
+
+<p>To whiten <span  class="math">\(X\)</span>, we perform an eigenvalue decomposition on the covariance matrix of the centered <span  class="math">\(X\)</span>:</p>
+
+<p><span  class="math">\[X = D^{\frac{-1}{2}}E^{T}X\]</span></p>
+
+<p>where <span  class="math">\(D\)</span> is the diagonal matrix of eigenvalues and <span  class="math">\(E\)</span> the matrix of eigenvectors.</p>
+
+<p>In this setting we have:</p>
+
+<p><span  class="math">\[y = w^{T}X\]</span></p>
+
+<p><span  class="math">\[J(w^{T}X) \approx [E\{G(w^{T}X)\} - E\{G(g)\}]^2\]</span></p>
+
+<p>The problem is now to find the unit vector <span  class="math">\(w\)</span> so that <span  class="math">\(w^{T}X\)</span> maximizes the non-Gaussianity. We can achieve that by using an approximative iteration of <strong>Newton's Method</strong> defined by:</p>
+
+<p><span  class="math">\[w_{p} = w_{p} - \frac{\boldsymbol{\nabla}J(w_{p}^{T}X)}{\boldsymbol{H}J(w_{p}^{T}X)}\]</span></p>
+
+<p>To do so, we have to compute the gradient and the hessian of <span  class="math">\(J(w^{T}X)\)</span>. We have:</p>
+
+<p><span  class="math">\[\boldsymbol{\nabla} J(w^{T}X) \propto E\{XG'(w^{T}X)\}\]</span></p>
+
+<p><span  class="math">\[\boldsymbol{H}J(w^{T}X) \propto E\{XX^{T}G''(w^{T}X)\}\]</span></p>
+
+<p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">this paper</a>, we cannot use directly this gradient. We have to add <span  class="math">\(w\)</span> multiplied by a constant <span  class="math">\(\alpha\)</span> in the gradient result. We obtain:</p>
+
+<p><span  class="math">\[\boldsymbol{\nabla} J(w^{T}X) \propto E\{XG'(w^{T}X)\} + \alpha w\]</span></p>
+
+<p><span  class="math">\[\boldsymbol{H}J(w^{T}X) \propto E\{XX^{T}G''(w^{T}X)\} + \alpha I\]</span></p>
+
+<p>The approximative Newton's iteration becomes:</p>
+
+<p><span  class="math">\[w_{p} = w_{p} - \frac{E\{XG'(w_{p}^{T}X)\} + \alpha w}{E\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I}\]</span></p>
+
+<p>And it can be simplified to:</p>
+
+<p><span  class="math">\[w_{p} = E\{XG'(w_{p}^{T}X)\} - E\{G''(w_{p}^{T}X)\}w_{p}\]</span></p>
+
+<p>We now have a one-unit algorithm to solve the cocktail party problem. But, we don't want to estimate one independent component but multiple ones. A method, is to add after the Newton's iteration a <strong>deflationary orthogonalization</strong> step defined by:</p>
+
+<p><span  class="math">\[w_{p} = w_{p} - \sum_{i=1}^{p-1}(w_{p}^{T}w_{i})w_{i}\]</span></p>
+
+<p>More mathematical details can be found on page 192-194 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">this paper</a>.</p>
 
 <h2 id="algorithm">Algorithm</h2>
 
+<p>The complete algorithm will then look like this:</p>
+
+<ol>
+<li>Center the matrix <span  class="math">\(X\)</span><br></li>
+<li>Whiten the matrix <span  class="math">\(X\)</span><br></li>
+<li>Create a random vector of weight <span  class="math">\(w_{p}\)</span><br></li>
+<li>Perform a newton iteration on <span  class="math">\(w_{p}\)</span><br></li>
+<li>Perform a deflationary orthogonalization on <span  class="math">\(w_{p}\)</span><br></li>
+<li>Normalize <span  class="math">\(w_{p}\)</span><br></li>
+<li>if <span  class="math">\(w_{p}\)</span> is still changing go back to step 3<br>
+<br></li>
+</ol>
+
 <h2 id="implementation">Implementation</h2>
 
+<p>The implementation of the above algorithm is straightforward using Python and the Numpy library.</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<span class="c1"># Definition of G&#39;</span>
+<span class="k">def</span> <span class="nf">Gprime</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># Definition of G&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">Gsecond</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Center matrix X</span>
+<span class="k">def</span> <span class="nf">centerMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="err">@</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="k">return</span> <span class="n">M</span>
+
+<span class="c1"># Whiten matrix X with eigenvalue decomposition</span>
+<span class="k">def</span> <span class="nf">whitenMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">D</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">X</span> <span class="err">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">DE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span><span class="p">))</span> <span class="err">@</span> <span class="n">E</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">DE</span> <span class="err">@</span> <span class="n">X</span>
+
+<span class="c1"># One-unit algorithm step</span>
+<span class="k">def</span> <span class="nf">oneUnit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">wp</span><span class="p">):</span>
+    <span class="n">term1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">X</span> <span class="err">@</span> <span class="n">Gprime</span><span class="p">(</span><span class="n">wp</span> <span class="err">@</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">term2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Gsecond</span><span class="p">(</span><span class="n">wp</span> <span class="err">@</span> <span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">wp</span>
+    <span class="k">return</span> <span class="n">term1</span> <span class="o">-</span> <span class="n">term2</span>
+
+<span class="c1"># Deflationary orthogonalization</span>
+<span class="k">def</span> <span class="nf">orthogonolize</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">wp</span> <span class="o">-</span> <span class="p">((</span><span class="n">wp</span> <span class="err">@</span> <span class="n">W</span><span class="p">[:</span><span class="n">i</span><span class="p">,:]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="err">@</span> <span class="n">W</span><span class="p">[:</span><span class="n">i</span><span class="p">,:])</span>
+
+<span class="c1"># wp normalization</span>
+<span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">wp</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">wp</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span>
+
+<span class="c1"># Function to see if wp is still updating</span>
+<span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="n">wp1</span><span class="p">,</span> <span class="n">wp2</span><span class="p">):</span>
+    <span class="n">norm1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">wp1</span><span class="p">)</span>
+    <span class="n">norm2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">wp2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">norm1</span> <span class="o">-</span> <span class="n">norm2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fastICA</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">centerMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">whitenMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+    <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">wp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+        <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">old_wp</span> <span class="o">=</span> <span class="n">wp</span>
+            <span class="n">wp</span> <span class="o">=</span> <span class="n">oneUnit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span>
+            <span class="n">wp</span> <span class="o">=</span> <span class="n">orthogonolize</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">wp</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">old_wp</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">wp</span>
+                <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">W</span> <span class="err">@</span> <span class="n">X</span></code></pre></div>
+
 <h2 id="results">Results</h2>
+
+<p>Let's now load some audio samples and see the results. Here we are going to use a dataset containing sounds coming from 9 different sources. You can find the data, the complete code and the results on <a href="https://github.com/hbenbel/FastICA">my github</a>.</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">wavfile</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># Function to load the audio data</span>
+<span class="k">def</span> <span class="nf">loadData</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">nsources</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">ncomponents</span><span class="o">=</span><span class="mi">9</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nsources</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+        <span class="n">fs</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="s1">&#39;mix&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.wav&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fs</span><span class="p">,</span> <span class="n">data</span>
+
+<span class="c1"># Function to display the audio spectrum</span>
+<span class="k">def</span> <span class="nf">displayData</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Function to save the audio data separated by fastica</span>
+<span class="k">def</span> <span class="nf">saveData</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">wavfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">,</span> <span class="s1">&#39;ica_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&#34;.wav&#34;</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span>
+
+
+<span class="n">dataPath</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>  <span class="c1"># path to the folder containing the mix audio sounds</span>
+<span class="n">saveDataPath</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>  <span class="c1"># path to the folder that will contain the results of the fastICA</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dataPath</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dataPath</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">)</span>
+
+<span class="n">fs</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">loadData</span><span class="p">()</span>
+<span class="n">displayData</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="n">S</span> <span class="o">=</span> <span class="n">fastICA</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">displayData</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+
+<span class="n">saveData</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span></code></pre></div>
+
+<p><center><figure class="aligncenter">
+    <img src="/static/res.png"
+         alt="Data matrix before (left) and after (right) FastICA"/> <figcaption>
+            <p><em>Data matrix before (left) and after (right) FastICA</em></p>
+        </figcaption>
+</figure>
+</center></p>
 
 </div>
 
