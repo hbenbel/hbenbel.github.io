@@ -122,7 +122,7 @@ Here, we are going to present the most commonly used approach, named <strong>Ind
 
 <h1 id="ica">ICA</h1>
 
-<p>To solve the cocktail party problem, we have to isolate the sounds coming from the different actors. More formally, we have to separate multivariate signals into multiple independent signals. When using <strong>ICA</strong>, we are looking for independent components that will maximize the statistical independence of the estimated components. So, how can we force the estimated components to be as independent as possible ?</p>
+<p>To solve the cocktail party problem, we have to isolate the sounds coming from the different sources. More formally, we have to separate multivariate signals into multiple independent signals. When using <strong>ICA</strong>, we are looking for independent components that will maximize the statistical independence of the estimated components. So, how can we force the estimated components to be as independent as possible ?</p>
 
 <p>There are two approaches: we can try to <strong>minimize the mutual information</strong> of the components or, we can try to <strong>maximize the non-Gaussianity</strong> of the components. Here, we are going to focus on the second approach as it is the one used in FastICA.<br>
 Non-Gaussianity can be defined as a high/low level of spikiness of a distribution (here represented by an audio signal). The degree of spikiness of a distribution can be measured by using the normalized form of the fourth central moment of the distribution, also called <strong>Kurtosis</strong>. It is defined by this formula:</p>
@@ -144,7 +144,7 @@ Non-Gaussianity can be defined as a high/low level of spikiness of a distributio
 </center></p>
 
 <p>However, this measure is extremely sensitive to outliers and is not a robust way to determine the non-Gaussianity of a distribution.<br>
-According to the <strong>Central Limit Theorem</strong>, when independent random variables are added, their normalized sum tends toward a Gaussian distribution. We can use this theorem to define the Gaussianity of a distribution in terms of entropy, the distribution with the highest entropy being the Gaussian distribution. The entropy of a random variable <span  class="math">\(y\)</span> with the density function <span  class="math">\(p(y)\)</span> is defined as follow:</p>
+According to the <strong>Central Limit Theorem</strong><a href="https://mitocw.ups.edu.ec/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading6b.pdf">[1]</a>, when independent random variables are added, their normalized sum tends toward a Gaussian distribution. We can use this theorem to define the Gaussianity of a distribution in terms of entropy, the distribution with the highest entropy being the Gaussian distribution. The entropy of a random variable <span  class="math">\(y\)</span> with the density function <span  class="math">\(p(y)\)</span> is defined as follow:</p>
 
 <p><span  class="math">\[H(y) = -\int_{-\infty}^{\infty}p(y)\log{p(y)}dy = -E\{\log{p_{i}(y)}\}\]</span></p>
 
@@ -190,7 +190,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 
 <p><span  class="math">\[\boldsymbol{H}J(w^{T}X) \propto E\{XX^{T}G''(w^{T}X)\}\]</span></p>
 
-<p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">this paper</a>, we cannot use directly this gradient. We have to add <span  class="math">\(w\)</span> multiplied by a constant <span  class="math">\(\alpha\)</span> in the gradient result. We obtain:</p>
+<p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>, we cannot use directly this gradient. We have to add <span  class="math">\(w\)</span> multiplied by a constant <span  class="math">\(\alpha\)</span> in the gradient result. We obtain:</p>
 
 <p><span  class="math">\[\boldsymbol{\nabla} J(w^{T}X) \propto E\{XG'(w^{T}X)\} + \alpha w\]</span></p>
 
@@ -200,15 +200,15 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 
 <p><span  class="math">\[w_{p} = w_{p} - \frac{E\{XG'(w_{p}^{T}X)\} + \alpha w}{E\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I}\]</span></p>
 
-<p>And it can be simplified to:</p>
+<p>With the assumption that <span  class="math">\(X\)</span> has been centered and whitened and that <span  class="math">\(E\{XX^{T}G''(w^{T}X)\} \approx E\{XX^{T}\}E\{G''(w^{T}X)\}\)</span>, it can be simplified to:</p>
 
 <p><span  class="math">\[w_{p} = E\{XG'(w_{p}^{T}X)\} - E\{G''(w_{p}^{T}X)\}w_{p}\]</span></p>
 
-<p>We now have a one-unit algorithm to solve the cocktail party problem. But, we don't want to estimate one independent component but multiple ones. A method, is to add after the Newton's iteration a <strong>deflationary orthogonalization</strong> step defined by:</p>
+<p>We now have a one-unit algorithm to solve the cocktail party problem. But, we don't want to estimate only one independent component but multiple ones. A method, is to add after the Newton's iteration a <strong>deflationary orthogonalization</strong> step defined by:</p>
 
 <p><span  class="math">\[w_{p} = w_{p} - \sum_{i=1}^{p-1}(w_{p}^{T}w_{i})w_{i}\]</span></p>
 
-<p>More mathematical details can be found on page 192-194 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">this paper</a>.</p>
+<p>More details can be found on page 192-194 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>.</p>
 
 <h2 id="algorithm">Algorithm</h2>
 
@@ -217,11 +217,15 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 <ol>
 <li>Center the matrix <span  class="math">\(X\)</span><br></li>
 <li>Whiten the matrix <span  class="math">\(X\)</span><br></li>
-<li>Create a random vector of weight <span  class="math">\(w_{p}\)</span><br></li>
-<li>Perform a newton iteration on <span  class="math">\(w_{p}\)</span><br></li>
-<li>Perform a deflationary orthogonalization on <span  class="math">\(w_{p}\)</span><br></li>
-<li>Normalize <span  class="math">\(w_{p}\)</span><br></li>
-<li>if <span  class="math">\(w_{p}\)</span> is still changing go back to step 3<br>
+<li>Create a matrix <span  class="math">\(W\)</span> that will contain all the <span  class="math">\(w_{p}\)</span><br></li>
+<li>Repeat steps C times<br>
+4.1 Create a random vector of weight <span  class="math">\(w_{p}\)</span> of size <span  class="math">\(N\)</span><br>
+4.2 Perform a newton iteration on <span  class="math">\(w_{p}\)</span><br>
+4.3 Perform a deflationary orthogonalization on <span  class="math">\(w_{p}\)</span> using the current <span  class="math">\(W\)</span><br>
+4.4 Normalize <span  class="math">\(w_{p}\)</span><br>
+4.5 If <span  class="math">\(w_{p}\)</span> is still changing go back to step 3<br>
+4.6 Put <span  class="math">\(w_{p}\)</span> in <span  class="math">\(W\)</span><br></li>
+<li>Compute and return <span  class="math">\(W^{T}X\)</span><br>
 <br></li>
 </ol>
 
@@ -278,9 +282,9 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
     <span class="n">X</span> <span class="o">=</span> <span class="n">centerMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">whitenMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
-    <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="n">wp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">C</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+        <span class="n">wp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
         <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">old_wp</span> <span class="o">=</span> <span class="n">wp</span>
             <span class="n">wp</span> <span class="o">=</span> <span class="n">oneUnit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span>
@@ -303,10 +307,10 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="c1"># Function to load the audio data</span>
-<span class="k">def</span> <span class="nf">loadData</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">nsources</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">ncomponents</span><span class="o">=</span><span class="mi">9</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">loadData</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">nsources</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50000</span><span class="p">):</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nsources</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsources</span><span class="p">):</span>
         <span class="n">fs</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="s1">&#39;mix&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.wav&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">fs</span><span class="p">,</span> <span class="n">data</span>
@@ -335,7 +339,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">):</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">)</span>
 
-<span class="n">fs</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">loadData</span><span class="p">()</span>
+<span class="n">fs</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">loadData</span><span class="p">(</span><span class="n">dataPath</span><span class="p">)</span>
 <span class="n">displayData</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
 <span class="n">S</span> <span class="o">=</span> <span class="n">fastICA</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
