@@ -10,19 +10,19 @@
     <lastBuildDate>Fri, 18 Dec 2020 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>FastICA</title>
-      <link>https://hbenbel.github.io/2020/12/18/fastica/</link>
+      <link>https://hbenbel.github.io/blog/fastica/</link>
       <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
       
-      <guid>https://hbenbel.github.io/2020/12/18/fastica/</guid>
+      <guid>https://hbenbel.github.io/blog/fastica/</guid>
       <description>Cocktail Party Problem Imagine being in a party. Like in every party, the music is loud and everyone is screaming. Nevertheless, you can hear (almost) clearly the person that you are talking with. This capacity to focus your attention on a conversation in a noisy environment is what the psychoacousticians call the cocktail party effect. This effect becomes a problem when the person is unable to focus its attention on a particular stimulus.</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>https://hbenbel.github.io/page/about/</link>
+      <link>https://hbenbel.github.io/about/</link>
       <pubDate>Thu, 17 Dec 2020 02:13:50 +0000</pubDate>
       
-      <guid>https://hbenbel.github.io/page/about/</guid>
+      <guid>https://hbenbel.github.io/about/</guid>
       <description>About Hi there! My name is Hussem Ben Belgacem. I&amp;rsquo;m 24 and I started programming at the age of 12. I&amp;rsquo;m now a freshly graduated Computer Science Engineer. My speciality is Data Science &amp;amp; Artificial Intelligence and I&amp;rsquo;m also really confortable with Software Engineering.
 I currently speak fluently French, English, C++ and Python. I also have notions in Arabic and German.
 In my spare time I like to play video games, watch movies/tv shows and I also like to play the guitar.</description>
