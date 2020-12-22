@@ -186,19 +186,19 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 
 <p>The problem is now to find the unit vector <span  class="math">\(w\)</span> so that <span  class="math">\(w^{T}X\)</span> maximizes the non-Gaussianity. We can achieve that by using an approximative iteration of <strong>Newton's Method</strong> defined by:</p>
 
-<p><span  class="math">\[w_{p} = w_{p} - \frac{\boldsymbol{\nabla}J(w_{p}^{T}X)}{\boldsymbol{H}J(w_{p}^{T}X)}\]</span></p>
+<p><span  class="math">\[w_{p} = w_{p} - \frac{J'(w_{p}^{T}X)}{J''(w_{p}^{T}X)}\]</span></p>
 
-<p>To do so, we have to compute the gradient and the hessian of <span  class="math">\(J(w^{T}X)\)</span>. We have:</p>
+<p>To do so, we have to compute the first and the second derivative of <span  class="math">\(J(w^{T}X)\)</span> according to w. We have:</p>
 
-<p><span  class="math">\[\boldsymbol{\nabla} J(w^{T}X) \propto E\{XG'(w^{T}X)\}\]</span></p>
+<p><span  class="math">\[J'(w_{p}^{T}X) \propto E\{XG'(w^{T}X)\}\]</span></p>
 
-<p><span  class="math">\[\boldsymbol{H}J(w^{T}X) \propto E\{XX^{T}G''(w^{T}X)\}\]</span></p>
+<p><span  class="math">\[J''(w_{p}^{T}X) \propto E\{XX^{T}G''(w^{T}X)\}\]</span></p>
 
 <p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>, we cannot use directly this gradient. We have to add <span  class="math">\(w\)</span> multiplied by a constant <span  class="math">\(\alpha\)</span> in the gradient result. We obtain:</p>
 
-<p><span  class="math">\[\boldsymbol{\nabla} J(w^{T}X) \propto E\{XG'(w^{T}X)\} + \alpha w\]</span></p>
+<p><span  class="math">\[J'(w_{p}^{T}X) \propto E\{XG'(w^{T}X)\} + \alpha w\]</span></p>
 
-<p><span  class="math">\[\boldsymbol{H}J(w^{T}X) \propto E\{XX^{T}G''(w^{T}X)\} + \alpha I\]</span></p>
+<p><span  class="math">\[J''(w_{p}^{T}X) \propto E\{XX^{T}G''(w^{T}X)\} + \alpha I\]</span></p>
 
 <p>The approximative Newton's iteration becomes:</p>
 
