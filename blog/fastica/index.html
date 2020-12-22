@@ -188,23 +188,23 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 
 <p><span  class="math">\[w_{p} = w_{p} - \frac{J'(w_{p}^{T}X)}{J''(w_{p}^{T}X)}\]</span></p>
 
-<p>To do so, we have to compute the gradient and the derivative of the gradient  of <span  class="math">\(J(w^{T}X)\)</span> according to <span  class="math">\(w\)</span>. We have:</p>
+<p>To do so, we have to compute the gradient and the derivative of the gradient  of <span  class="math">\(J(w_{p}^{T}X)\)</span> according to <span  class="math">\(w_{p}\)</span>. We have:</p>
 
-<p><span  class="math">\[J'(w_{p}^{T}X) \propto E\{XG'(w^{T}X)\}\]</span></p>
+<p><span  class="math">\[J'(w_{p}^{T}X) \propto E\{XG'(w_{p}^{T}X)\}\]</span></p>
 
-<p><span  class="math">\[J''(w_{p}^{T}X) \propto E\{XX^{T}G''(w^{T}X)\}\]</span></p>
+<p><span  class="math">\[J''(w_{p}^{T}X) \propto E\{XX^{T}G''(w_{p}^{T}X)\}\]</span></p>
 
-<p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>, we cannot use directly this gradient. We have to add <span  class="math">\(w\)</span> multiplied by a constant <span  class="math">\(\alpha\)</span>. We obtain:</p>
+<p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>, we cannot use directly this gradient. We have to add <span  class="math">\(w_{p}\)</span> multiplied by a constant <span  class="math">\(\alpha\)</span>. We obtain:</p>
 
-<p><span  class="math">\[J'(w_{p}^{T}X) \propto E\{XG'(w^{T}X)\} + \alpha w\]</span></p>
+<p><span  class="math">\[J'(w_{p}^{T}X) \propto E\{XG'(w_{p}^{T}X)\} + \alpha w_{p}\]</span></p>
 
-<p><span  class="math">\[J''(w_{p}^{T}X) \propto E\{XX^{T}G''(w^{T}X)\} + \alpha I\]</span></p>
+<p><span  class="math">\[J''(w_{p}^{T}X) \propto E\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I\]</span></p>
 
 <p>The approximative Newton's iteration becomes:</p>
 
-<p><span  class="math">\[w_{p} = w_{p} - \frac{E\{XG'(w_{p}^{T}X)\} + \alpha w}{E\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I}\]</span></p>
+<p><span  class="math">\[w_{p} = w_{p} - \frac{E\{XG'(w_{p}^{T}X)\} + \alpha w_{p}}{E\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I}\]</span></p>
 
-<p>With the assumption that <span  class="math">\(X\)</span> has been centered and whitened and that <span  class="math">\(E\{XX^{T}G''(w^{T}X)\} \approx E\{XX^{T}\}E\{G''(w^{T}X)\}\)</span>, it can be simplified to:</p>
+<p>With the assumption that <span  class="math">\(X\)</span> has been centered and whitened and that <span  class="math">\(E\{XX^{T}G''(w_{p}^{T}X)\} \approx E\{XX^{T}\}E\{G''(w_{p}^{T}X)\}\)</span>, it can be simplified to:</p>
 
 <p><span  class="math">\[w_{p} = E\{XG'(w_{p}^{T}X)\} - E\{G''(w_{p}^{T}X)\}w_{p}\]</span></p>
 
