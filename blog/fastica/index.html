@@ -95,7 +95,7 @@
     </p>
     
         <p class="post-reading post-line">
-            <span>Estimated reading time: 7 min</span>
+            <span>Estimated reading time: 8 min</span>
         </p>
     
 </header>
@@ -336,9 +336,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 
 <span class="n">dataPath</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>  <span class="c1"># path to the folder containing the mix audio sounds</span>
 <span class="n">saveDataPath</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>  <span class="c1"># path to the folder that will contain the results of the fastICA</span>
-
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dataPath</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dataPath</span><span class="p">)</span>
+<span class="n">nComponents</span> <span class="o">=</span> <span class="mi">9</span>  <span class="c1"># number of components that we want</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">):</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">)</span>
@@ -346,7 +344,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 <span class="n">fs</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">loadData</span><span class="p">(</span><span class="n">dataPath</span><span class="p">)</span>
 <span class="n">displayData</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
-<span class="n">S</span> <span class="o">=</span> <span class="n">fastICA</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">fastICA</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">nComponents</span><span class="p">)</span>
 <span class="n">displayData</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
 
 <span class="n">saveData</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span></code></pre></div>
