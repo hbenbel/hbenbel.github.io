@@ -267,7 +267,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
     <span class="k">return</span> <span class="n">term1</span> <span class="o">-</span> <span class="n">term2</span>
 
 <span class="c1"># Deflationary orthogonalization</span>
-<span class="k">def</span> <span class="nf">orthogonolize</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">orthogonalize</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">wp</span> <span class="o">-</span> <span class="p">((</span><span class="n">wp</span> <span class="err">@</span> <span class="n">W</span><span class="p">[:</span><span class="n">i</span><span class="p">,:]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="err">@</span> <span class="n">W</span><span class="p">[:</span><span class="n">i</span><span class="p">,:])</span>
 
 <span class="c1"># wp normalization</span>
@@ -292,7 +292,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
         <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">old_wp</span> <span class="o">=</span> <span class="n">wp</span>
             <span class="n">wp</span> <span class="o">=</span> <span class="n">oneUnit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span>
-            <span class="n">wp</span> <span class="o">=</span> <span class="n">orthogonolize</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">wp</span> <span class="o">=</span> <span class="n">orthogonalize</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
             <span class="n">wp</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span>
 
             <span class="k">if</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">old_wp</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
