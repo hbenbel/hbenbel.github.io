@@ -131,11 +131,11 @@ Here, we are going to present the most commonly used approach, named <strong>Ind
 <p>There are two approaches: we can try to <strong>minimize the mutual information</strong> of the components or, we can try to <strong>maximize the non-Gaussianity</strong> of the components. Here, we are going to focus on the second approach as it is the one used in FastICA.<br>
 Non-Gaussianity can be defined as a high/low level of spikiness of a distribution (here represented by an audio signal). The degree of spikiness of a distribution can be measured by using the normalized form of the fourth central moment of the distribution, also called <strong>Kurtosis</strong>. It is defined by this formula:</p>
 
-<p><span  class="math">\[kurtosis(x) = E\{{x}^{4}\} - 3{(E\{{x}^{2}\})}^{2}\]</span></p>
+<p><span  class="math">\[kurtosis(x) = \mathop{\mathbb{E}}\{{x}^{4}\} - 3{(\mathop{\mathbb{E}}\{{x}^{2}\})}^{2}\]</span></p>
 
 <p>If we assume that <span  class="math">\(x\)</span> is a zero mean and unit variance variable, kurtosis becomes:</p>
 
-<p><span  class="math">\[kurtosis(x) = E\{{x}^{4}\} - 3\]</span></p>
+<p><span  class="math">\[kurtosis(x) = \mathop{\mathbb{E}}\{{x}^{4}\} - 3\]</span></p>
 
 <p><strong>Kurtosis measure</strong> is positive if the distribution is spikier than Gaussian and negative if it is flatter. The non-Gaussianity can therefore be measured by computing the absolute value of the Kurtosis measure.</p>
 
@@ -150,7 +150,7 @@ Non-Gaussianity can be defined as a high/low level of spikiness of a distributio
 <p>However, this measure is extremely sensitive to outliers and is not a robust way to determine the non-Gaussianity of a distribution.<br>
 According to the <strong>Central Limit Theorem</strong><a href="https://mitocw.ups.edu.ec/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading6b.pdf">[1]</a>, when independent random variables are added, their normalized sum tends toward a Gaussian distribution. We can use this theorem to define the Gaussianity of a distribution in terms of entropy, the distribution with the highest entropy being the Gaussian distribution. The entropy of a random variable <span  class="math">\(y\)</span> with the density function <span  class="math">\(p(y)\)</span> is defined as follow:</p>
 
-<p><span  class="math">\[H(y) = -E\{\log{p_{i}(y)}\}\]</span></p>
+<p><span  class="math">\[H(y) = -\mathop{\mathbb{E}}\{\log{p_{i}(y)}\}\]</span></p>
 
 <p>Based on the property of the Gaussian distribution in terms of entropy and on the above definition of the entropy, we can define the <strong>negentropy</strong> as follow:</p>
 
@@ -159,16 +159,16 @@ According to the <strong>Central Limit Theorem</strong><a href="https://mitocw.u
 <p>where <span  class="math">\(y_{G}\)</span> is a Gaussian variable with the same variance as <span  class="math">\(y\)</span>.<br>
 Gaussian distribution being the distribution with the highest entropy, <span  class="math">\(H(y_{G})\)</span> &gt; <span  class="math">\(H(y)\)</span> with the assumption that <span  class="math">\(y\)</span> is not Gaussian (which is the case in the cocktail party problem). Therefore, to find the most non-Gaussian <span  class="math">\(y\)</span> we have to maximize <span  class="math">\(J(y)\)</span>. However, in practice we can't directly maximize the negentropy as it is computationally expensive. Instead, we try to <strong>maximize an approximation of the negentropy</strong>. The negentropy approximation used by FastICA is the following:</p>
 
-<p><span  class="math">\[J(y) \approx [E\{G(y)\} - E\{G(g)\}]^2\]</span></p>
+<p><span  class="math">\[J(y) \approx [\mathop{\mathbb{E}}\{G(y)\} - \mathop{\mathbb{E}}\{G(g)\}]^2\]</span></p>
 
 <p>where <span  class="math">\(G\)</span> is a non-quadratic function, <span  class="math">\(y\)</span> a zero mean and unit variance variable and <span  class="math">\(g\)</span> a Gaussian zero mean and unit variance variable. In the case of FastICA, <span  class="math">\(G(x) = \log\cosh(x)\)</span>.<br>
-Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just have to maximize <span  class="math">\(E\{G(y)\}\)</span> in order to maximize <span  class="math">\(J(y)\)</span>. That's where FastICA comes into play !</p>
+Moreover, since <span  class="math">\(\mathop{\mathbb{E}}\{G(g)\}\)</span> is contant, we just have to maximize <span  class="math">\(\mathop{\mathbb{E}}\{G(y)\}\)</span> in order to maximize <span  class="math">\(J(y)\)</span>. That's where FastICA comes into play !</p>
 
 <h1 id="fastica">FastICA</h1>
 
 <p>Let <span  class="math">\(X\)</span> be the input data matrix of size <span  class="math">\(N\)</span> x <span  class="math">\(M\)</span>, <span  class="math">\(w\)</span> a weight vector of size <span  class="math">\(N\)</span> and <span  class="math">\(C\)</span> the number of components. We want to find the matrix <span  class="math">\(W\)</span> of size <span  class="math">\(N\)</span> x <span  class="math">\(C\)</span> that will project <span  class="math">\(X\)</span> onto independent component (i.e. <span  class="math">\(W^{T}X =\)</span> matrix with independent components).</p>
 
-<p>For FastICA to work we need to make sure that <span  class="math">\(E\{XX^{T}\} = I\)</span>. We accomplish this by centering and whitening the input data matrix <span  class="math">\(X\)</span>. To center <span  class="math">\(X\)</span>, we subtract to each of its column the mean value of the column:</p>
+<p>For FastICA to work we need to make sure that <span  class="math">\(\mathop{\mathbb{E}}\{XX^{T}\} = I\)</span>. We accomplish this by centering and whitening the input data matrix <span  class="math">\(X\)</span>. To center <span  class="math">\(X\)</span>, we subtract to each of its column the mean value of the column:</p>
 
 <p><span  class="math">\[x_{ij} = x_{ij} - \frac{1}{M}\sum_{k}x_{ik}\]</span></p>
 
@@ -182,7 +182,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 
 <p><span  class="math">\[y = w^{T}X\]</span></p>
 
-<p><span  class="math">\[J(w^{T}X) \approx [E\{G(w^{T}X)\} - E\{G(g)\}]^2\]</span></p>
+<p><span  class="math">\[J(w^{T}X) \approx [\mathop{\mathbb{E}}\{G(w^{T}X)\} - \mathop{\mathbb{E}}\{G(g)\}]^2\]</span></p>
 
 <p>The problem is now to find the unit vector <span  class="math">\(w\)</span> so that <span  class="math">\(w^{T}X\)</span> maximizes the non-Gaussianity. We can achieve that by using an approximative iteration of <strong>Newton's Method</strong> defined by:</p>
 
@@ -190,23 +190,23 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 
 <p>To do so, we have to compute the gradient and the derivative of the gradient  of <span  class="math">\(J(w_{p}^{T}X)\)</span> according to <span  class="math">\(w_{p}\)</span>. We have:</p>
 
-<p><span  class="math">\[J'(w_{p}^{T}X) \propto E\{XG'(w_{p}^{T}X)\}\]</span></p>
+<p><span  class="math">\[J'(w_{p}^{T}X) \propto \mathop{\mathbb{E}}\{XG'(w_{p}^{T}X)\}\]</span></p>
 
-<p><span  class="math">\[J''(w_{p}^{T}X) \propto E\{XX^{T}G''(w_{p}^{T}X)\}\]</span></p>
+<p><span  class="math">\[J''(w_{p}^{T}X) \propto \mathop{\mathbb{E}}\{XX^{T}G''(w_{p}^{T}X)\}\]</span></p>
 
 <p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>, we cannot use directly this gradient. We have to add <span  class="math">\(w_{p}\)</span> multiplied by a constant <span  class="math">\(\alpha\)</span>. We obtain:</p>
 
-<p><span  class="math">\[J'(w_{p}^{T}X) \propto E\{XG'(w_{p}^{T}X)\} + \alpha w_{p}\]</span></p>
+<p><span  class="math">\[J'(w_{p}^{T}X) \propto \mathop{\mathbb{E}}\{XG'(w_{p}^{T}X)\} + \alpha w_{p}\]</span></p>
 
-<p><span  class="math">\[J''(w_{p}^{T}X) \propto E\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I\]</span></p>
+<p><span  class="math">\[J''(w_{p}^{T}X) \propto \mathop{\mathbb{E}}\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I\]</span></p>
 
 <p>The approximative Newton's iteration becomes:</p>
 
-<p><span  class="math">\[w_{p} = w_{p} - \frac{E\{XG'(w_{p}^{T}X)\} + \alpha w_{p}}{E\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I}\]</span></p>
+<p><span  class="math">\[w_{p} = w_{p} - \frac{\mathop{\mathbb{E}}\{XG'(w_{p}^{T}X)\} + \alpha w_{p}}{\mathop{\mathbb{E}}\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I}\]</span></p>
 
-<p>With the assumption that <span  class="math">\(X\)</span> has been centered and whitened and that <span  class="math">\(E\{XX^{T}G''(w_{p}^{T}X)\} \approx E\{XX^{T}\}E\{G''(w_{p}^{T}X)\}\)</span>, it can be simplified to:</p>
+<p>With the assumption that <span  class="math">\(X\)</span> has been centered and whitened and that <span  class="math">\(\mathop{\mathbb{E}}\{XX^{T}G''(w_{p}^{T}X)\} \approx \mathop{\mathbb{E}}\{XX^{T}\}\mathop{\mathbb{E}}\{G''(w_{p}^{T}X)\}\)</span>, it can be simplified to:</p>
 
-<p><span  class="math">\[w_{p} = E\{XG'(w_{p}^{T}X)\} - E\{G''(w_{p}^{T}X)\}w_{p}\]</span></p>
+<p><span  class="math">\[w_{p} = \mathop{\mathbb{E}}\{XG'(w_{p}^{T}X)\} - \mathop{\mathbb{E}}\{G''(w_{p}^{T}X)\}w_{p}\]</span></p>
 
 <p>We now have a one-unit algorithm to solve the cocktail party problem. But, we don't want to estimate only one independent component but multiple ones. A method, is to add after the Newton's iteration a <strong>deflationary orthogonalization</strong> step defined by:</p>
 
@@ -360,7 +360,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
 <h1 id="references">References</h1>
 
 <p>[1] <a href="https://mitocw.ups.edu.ec/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading6b.pdf">MIT OpenCourseWare on Central Limit Theorem and the Law of Large Numbers by Jeremy Orloff and Jonathan Bloom</a><br>
-[2] <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">Independent Component Analysis by Aapo Hyvarinen, Juha Karhunen, and Erkki Oja</a></p>
+[2] <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">Independent Component Analysis by Aapo Hyvarinen, Juha Karhunen and Erkki Oja</a></p>
 
 </div>
 
@@ -383,7 +383,7 @@ Moreover, since <span  class="math">\(E\{G(g)\}\)</span> is contant, we just hav
                 </div>
 
                 <p class="footer-copyright">
-                    <span>&copy; 2020 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                    <span>&copy; 2021 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
                 </p>
                 <p class="footer-copyright">
                     <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on 👋</title>
-    <link>https://hbenbel.github.io/post/</link>
-    <description>Recent content in Posts on 👋</description>
+    <title>cnn on 👋</title>
+    <link>https://hbenbel.github.io/tags/cnn/</link>
+    <description>Recent content in cnn on 👋</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Hussem Ben Belgacem</copyright>
-    <lastBuildDate>Mon, 18 Jan 2021 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 18 Jan 2021 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/tags/cnn/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Image Colorization</title>
       <link>https://hbenbel.github.io/blog/colorization/</link>
@@ -16,15 +16,6 @@
       <guid>https://hbenbel.github.io/blog/colorization/</guid>
       <description>Introduction Image colorization is a two century old subject which was first tackled by photographers. As early as 1839, european photographers would hand-color monochrome photographs with a mixture of pigments and gum arabic. Although it emerged in Europe, the practice of image colorization gained tremendous popularity in Japan in the 1860s as it began to be considered as a refined art.
  Monochrome photo (left) and Hand-colored version (right) by the Japan Photographic Association (1876-1885)</description>
-    </item>
-    
-    <item>
-      <title>FastICA</title>
-      <link>https://hbenbel.github.io/blog/fastica/</link>
-      <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/blog/fastica/</guid>
-      <description>Cocktail Party Problem Imagine being in a party. Like in every party, the music is loud and everyone is screaming. Nevertheless, you can hear (almost) clearly the person that you are talking with. This capacity to focus your attention on a conversation in a noisy environment is what the psychoacousticians call the cocktail party effect. This effect becomes a problem when the person is unable to focus its attention on a particular stimulus.</description>
     </item>
     
   </channel>
