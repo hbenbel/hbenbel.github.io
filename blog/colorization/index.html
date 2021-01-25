@@ -95,7 +95,7 @@
     </p>
     
         <p class="post-reading post-line">
-            <span>Estimated reading time: 5 min</span>
+            <span>Estimated reading time: 6 min</span>
         </p>
     
 </header>
@@ -182,6 +182,8 @@ In a formal way, the cost functions with <strong>L1 Regularization</strong> are 
 <p><span  class="math">\[G_{loss} = BCELoss(G(x), 1) + \lambda \cdot L1Loss(G(x), y)\]</span></p>
 
 <p><span  class="math">\[D_{loss} = BCELoss(D(y), 1) + BCELoss(D(G(x)), 0)\]</span></p>
+
+<p>Where <span  class="math">\(1\)</span> is the &quot;real&quot; label, <span  class="math">\(0\)</span> is the &quot;fake&quot; label, <span  class="math">\(x\)</span> the grayscale input image and <span  class="math">\(y\)</span> the a and b channels of the orignal image in the LAB color space.</p>
 
 <h1 id="postprocessing">Post-processing</h1>
 
