@@ -134,7 +134,7 @@
 </figure>
 </center></p>
 
-<p>In the past century, dyes, watercolors, oils, crayons and pastels have also been used to colorize photographs but none really revolutionized the practice. The creation of computers and the emergence of softwares for image editing that followed initiated a change in the way the image colorization was done. The first to introduce computerized colorization was the Canadian engineer <strong>Wilson Markle</strong> in the 1970s. His method consisted of assigning predetermined colors to shades of gray in each scene. Nowadays, we see the emergence of deep learning based approaches that allow the automatic colorization of grayscale images. At first, the researchers used <strong>CNN</strong> and it gave pretty robust results as in [<a href="https://arxiv.org/pdf/1603.08511.pdf">1</a>]. We now see more and more approches based on <strong>Generative Adversarial Networks</strong> (GAN) and more specifically <strong>Deep Convolutional Generative Adversarial Networks</strong> (DCGAN) as in [<a href="https://arxiv.org/pdf/1803.05400.pdf">2</a>]. Here, we are going to present a DCGAN approach to the image colorization problem.</p>
+<p>In the past century, dyes, watercolors, oils, crayons and pastels have also been used to colorize photographs but none really revolutionized the practice. The creation of computers and the emergence of softwares for image editing that followed initiated a change in the way the image colorization was done. The first to introduce computerized colorization was the Canadian engineer <strong>Wilson Markle</strong> in the 1970s. His method consisted of assigning predetermined colors to shades of gray in each scene. Nowadays, we see the emergence of deep learning based approaches that allow the automatic colorization of grayscale images. At first, the researchers used <strong>CNN</strong> and it gave pretty robust results as in <a href="https://arxiv.org/pdf/1603.08511.pdf">[1]</a>. We now see more and more approches based on <strong>Generative Adversarial Networks</strong> (GAN) and more specifically <strong>Deep Convolutional Generative Adversarial Networks</strong> (DCGAN) as in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a>. Here, we are going to present a DCGAN approach to the image colorization problem.</p>
 
 <h1 id="preprocessing">Pre-processing</h1>
 
@@ -155,17 +155,17 @@ The LAB color space is composed of three axis: the luminance/lightness (L) which
 
 <h1 id="model">Model</h1>
 
-<p>As we are going to train a GAN, we will need two models: the generator and the discriminator. We are going to use the same architectures as in [<a href="https://arxiv.org/pdf/1803.05400.pdf">2</a>]. Thus, the generator will be a <strong>UNet</strong>-like model and the discriminator a simple CNN with 4 down-sampling layers similar to the contractive path of the generator.</p>
+<p>As we are going to train a GAN, we will need two models: the generator and the discriminator. We are going to use the same architectures as in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a>. Thus, the generator will be a <strong>UNet</strong>-like model and the discriminator a simple CNN with 4 down-sampling layers similar to the contractive path of the generator.</p>
 
 <p><center><figure class="aligncenter">
     <img src="/static/colorization/architecture2.png"
          alt="Architecture used for the generator in [2]"/> <figcaption>
-            <p><em>Architecture used for the generator in [<a href="https://arxiv.org/pdf/1803.05400.pdf">2</a>]</em></p>
+            <p><em>Architecture used for the generator in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a></em></p>
         </figcaption>
 </figure>
 </center></p>
 
-<p>However, we made a small change in the output of the generator. Instead of outputting the three LAB channels we output only the a and b channels as in [<a href="https://arxiv.org/pdf/1603.08511.pdf">1</a>].</p>
+<p>However, we made a small change in the output of the generator. Instead of outputting the three LAB channels we output only the a and b channels as in <a href="https://arxiv.org/pdf/1603.08511.pdf">[1]</a>.</p>
 
 <h1 id="loss">Loss</h1>
 
@@ -191,7 +191,7 @@ In a formal way, the cost functions with <strong>L1 Regularization</strong> are 
 
 <h1 id="configuration--results">Configuration &amp; Results</h1>
 
-<p>The model has been trained using a Kaggle GPU Notebook with the <strong>CIFAR-10 Dataset</strong>[<a href="https://www.cs.toronto.edu/~kriz/cifar.html">3</a>]. We splitted the data into 80% for training, 10% for validation and 10% for testing. We used almost the same configuration as in [<a href="https://arxiv.org/pdf/1803.05400.pdf">2</a>]: a batch size of 128; <strong>Adam optimizer</strong> with a learning rate of 0.0002, a <span  class="math">\(\beta_{1}\)</span> of 0.5 and a <span  class="math">\(\beta_{2}\)</span> of 0.999; a <span  class="math">\(\lambda\)</span> of 100 and an early stopping patience of 5. We launched the training for 200 epochs and it stopped, due to the early stopping patience, at the epoch 19. The code has been written in Python and Pytorch and it can be found on <a href="https://github.com/hbenbel/Colorization">my github</a>. Note that, due to the lack of VRAM, we used FP32 precision (float) instead of FP64 precision (double) that is present in the code. Below you can see some of the results on the testing set with the original 32x32 image on the left and the colorized 32x32 image on the right:</p>
+<p>The model has been trained using a Kaggle GPU Notebook with the <strong>CIFAR-10 Dataset</strong><a href="https://www.cs.toronto.edu/~kriz/cifar.html">[3]</a>. We splitted the data into 80% for training, 10% for validation and 10% for testing. We used almost the same configuration as in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a>: a batch size of 128; <strong>Adam optimizer</strong> with a learning rate of 0.0002, a <span  class="math">\(\beta_{1}\)</span> of 0.5 and a <span  class="math">\(\beta_{2}\)</span> of 0.999; a <span  class="math">\(\lambda\)</span> of 100 and an early stopping patience of 5. We launched the training for 200 epochs and it stopped, due to the early stopping patience, at the epoch 19. The code has been written in Python and Pytorch and it can be found on <a href="https://github.com/hbenbel/Colorization">my github</a>. Note that, due to the lack of VRAM, we used FP32 precision (float) instead of FP64 precision (double) that is present in the code. Below you can see some of the results on the testing set with the original 32x32 image on the left and the colorized 32x32 image on the right:</p>
 
 <p><center><figure class="aligncenter">
     <img src="/static/colorization/4432.png"/> 
