@@ -1,62 +1,85 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
   <url>
-    <loc>https://hbenbel.github.io/tags/algorithm/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hbenbel.github.io/tags/color-magnification/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hbenbel.github.io/blog/evm/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hbenbel.github.io/tags/machine-learning/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hbenbel.github.io/tags/motion-magnification/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hbenbel.github.io/tags/papers-discovery/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hbenbel.github.io/post/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hbenbel.github.io/tags/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hbenbel.github.io/</loc>
-    <lastmod>2021-02-15T00:42:00+00:00</lastmod>
-  </url><url>
     <loc>https://hbenbel.github.io/tags/cnn/</loc>
     <lastmod>2021-01-24T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/tags/colorization/</loc>
     <lastmod>2021-01-24T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/tags/conditional-gan/</loc>
     <lastmod>2021-01-24T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/tags/deep-learning/</loc>
     <lastmod>2021-01-24T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/tags/gan/</loc>
     <lastmod>2021-01-24T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/blog/colorization/</loc>
     <lastmod>2021-01-24T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
+    <loc>https://hbenbel.github.io/tags/machine-learning/</loc>
+    <lastmod>2021-01-24T00:42:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hbenbel.github.io/tags/papers-discovery/</loc>
+    <lastmod>2021-01-24T00:42:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hbenbel.github.io/post/</loc>
+    <lastmod>2021-01-24T00:42:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hbenbel.github.io/tags/</loc>
+    <lastmod>2021-01-24T00:42:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hbenbel.github.io/</loc>
+    <lastmod>2021-01-24T00:42:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hbenbel.github.io/tags/algorithm/</loc>
+    <lastmod>2020-12-18T00:42:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/tags/cocktail-party-problem/</loc>
     <lastmod>2020-12-18T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/blog/fastica/</loc>
     <lastmod>2020-12-18T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/tags/independent-component-analysis/</loc>
     <lastmod>2020-12-18T00:42:00+00:00</lastmod>
-  </url><url>
+  </url>
+  
+  <url>
     <loc>https://hbenbel.github.io/about/</loc>
     <lastmod>2020-12-17T02:13:50+00:00</lastmod>
   </url>
+  
 </urlset>
