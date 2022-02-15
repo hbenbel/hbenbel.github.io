@@ -7,7 +7,52 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Hussem Ben Belgacem</copyright>
-    <lastBuildDate>Sun, 24 Jan 2021 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 15 Feb 2021 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>algorithm</title>
+      <link>https://hbenbel.github.io/tags/algorithm/</link>
+      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>color-magnification</title>
+      <link>https://hbenbel.github.io/tags/color-magnification/</link>
+      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/color-magnification/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>machine-learning</title>
+      <link>https://hbenbel.github.io/tags/machine-learning/</link>
+      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/machine-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>motion-magnification</title>
+      <link>https://hbenbel.github.io/tags/motion-magnification/</link>
+      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/motion-magnification/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>papers-discovery</title>
+      <link>https://hbenbel.github.io/tags/papers-discovery/</link>
+      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/papers-discovery/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>cnn</title>
       <link>https://hbenbel.github.io/tags/cnn/</link>
@@ -54,34 +99,7 @@
     </item>
     
     <item>
-      <title>machine-learning</title>
-      <link>https://hbenbel.github.io/tags/machine-learning/</link>
-      <pubDate>Sun, 24 Jan 2021 00:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/machine-learning/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>papers-discovery</title>
-      <link>https://hbenbel.github.io/tags/papers-discovery/</link>
-      <pubDate>Sun, 24 Jan 2021 00:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/papers-discovery/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>algorithm</title>
-      <link>https://hbenbel.github.io/tags/algorithm/</link>
-      <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/algorithm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>cocktail party problem</title>
+      <title>cocktail-party-problem</title>
       <link>https://hbenbel.github.io/tags/cocktail-party-problem/</link>
       <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
       
@@ -90,7 +108,7 @@
     </item>
     
     <item>
-      <title>independent component analysis</title>
+      <title>independent-component-analysis</title>
       <link>https://hbenbel.github.io/tags/independent-component-analysis/</link>
       <pubDate>Fri, 18 Dec 2020 00:42:00 +0000</pubDate>
       

@@ -7,7 +7,7 @@
         <meta name="description" content="Independent Component Analysis for the Cocktail Party Problem">
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
-        <meta name="generator" content="Hugo 0.79.0" />
+        <meta name="generator" content="Hugo 0.92.2" />
         <meta name="robots" content="index,follow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta property="og:title" content="FastICA">
@@ -95,7 +95,7 @@
     </p>
     
         <p class="post-reading post-line">
-            <span>Estimated reading time: 8 min</span>
+            <span>Estimated reading time: 7 min</span>
         </p>
     
 </header>
@@ -104,9 +104,9 @@
         <p class="post-tags">
             <span>Tagged:</span>
                 <a href="/tags/algorithm/">algorithm</a>, 
-                <a href="/tags/cocktail-party-problem/">cocktail party problem</a>, 
-                <a href="/tags/independent-component-analysis/">independent component analysis</a>, 
-                <a href="/tags/machine-learning/">machine learning</a>
+                <a href="/tags/cocktail-party-problem/">cocktail-party-problem</a>, 
+                <a href="/tags/independent-component-analysis/">independent-component-analysis</a>, 
+                <a href="/tags/machine-learning/">machine-learning</a>
         </p>
     <div class="share">
             <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&title=FastICA&url=https%3a%2f%2fhbenbel.github.io%2fblog%2ffastica%2f&summary=Independent%20Component%20Analysis%20for%20the%20Cocktail%20Party%20Problem"
@@ -120,124 +120,70 @@
     
 
     <h1 id="cocktail-party-problem">Cocktail Party Problem</h1>
-
-<p>Imagine being in a party. Like in every party, the music is loud and everyone is screaming. Nevertheless, you can hear (almost) clearly the person that you are talking with. This capacity to focus your attention on a conversation in a noisy environment is what the psychoacousticians call <strong>the cocktail party effect</strong>. This effect becomes a problem when the person is unable to focus its attention on a particular stimulus. <strong>The cocktail party problem</strong> has first been studied in the early 1950s in the context of air traffic controls. Since then, this problem grew beyond the realm of psychology and we can use computational methods to solve it.<br>
+<p>Imagine being in a party. Like in every party, the music is loud and everyone is screaming. Nevertheless, you can hear (almost) clearly the person that you are talking with. This capacity to focus your attention on a conversation in a noisy environment is what the psychoacousticians call <strong>the cocktail party effect</strong>. This effect becomes a problem when the person is unable to focus its attention on a particular stimulus. <strong>The cocktail party problem</strong> has first been studied in the early 1950s in the context of air traffic controls. Since then, this problem grew beyond the realm of psychology and we can use computational methods to solve it.
 Here, we are going to present the most commonly used approach, named <strong>Independent Component Analysis</strong> (ICA), through the implementation of the <strong>FastICA</strong> algorithm.</p>
-
 <h1 id="ica">ICA</h1>
-
 <p>To solve the cocktail party problem, we have to isolate the sounds coming from the different sources. More formally, we have to separate multivariate signals into multiple independent signals. When using <strong>ICA</strong>, we are looking for independent components that will maximize the statistical independence of the estimated components. So, how can we force the estimated components to be as independent as possible ?</p>
-
-<p>There are two approaches: we can try to <strong>minimize the mutual information</strong> of the components or, we can try to <strong>maximize the non-Gaussianity</strong> of the components. Here, we are going to focus on the second approach as it is the one used in FastICA.<br>
+<p>There are two approaches: we can try to <strong>minimize the mutual information</strong> of the components or, we can try to <strong>maximize the non-Gaussianity</strong> of the components. Here, we are going to focus on the second approach as it is the one used in FastICA.
 Non-Gaussianity can be defined as a high/low level of spikiness of a distribution (here represented by an audio signal). The degree of spikiness of a distribution can be measured by using the normalized form of the fourth central moment of the distribution, also called <strong>Kurtosis</strong>. It is defined by this formula:</p>
-
-<p><span  class="math">\[kurtosis(x) = \mathop{\mathbb{E}}\{{x}^{4}\} - 3{(\mathop{\mathbb{E}}\{{x}^{2}\})}^{2}\]</span></p>
-
-<p>If we assume that <span  class="math">\(x\)</span> is a zero mean and unit variance variable, kurtosis becomes:</p>
-
-<p><span  class="math">\[kurtosis(x) = \mathop{\mathbb{E}}\{{x}^{4}\} - 3\]</span></p>
-
+<p>$$kurtosis(x) = \mathop{\mathbb{E}}{{x}^{4}} - 3{(\mathop{\mathbb{E}}{{x}^{2}})}^{2}$$</p>
+<p>If we assume that $$x$$ is a zero mean and unit variance variable, kurtosis becomes:</p>
+<p>$$kurtosis(x) = \mathop{\mathbb{E}}{{x}^{4}} - 3$$</p>
 <p><strong>Kurtosis measure</strong> is positive if the distribution is spikier than Gaussian and negative if it is flatter. The non-Gaussianity can therefore be measured by computing the absolute value of the Kurtosis measure.</p>
-
-<p><center><figure class="aligncenter">
-    <img src="/static/kurtosis.png"
-         alt="Gaussian distribution (blue) compared to distribution with different Kurtosis measure (red)"/> <figcaption>
-            <p><em>Gaussian distribution (blue) compared to distribution with different Kurtosis measure (red)</em></p>
-        </figcaption>
-</figure>
-</center></p>
-
-<p>However, this measure is extremely sensitive to outliers and is not a robust way to determine the non-Gaussianity of a distribution.<br>
-According to the <strong>Central Limit Theorem</strong><a href="https://mitocw.ups.edu.ec/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading6b.pdf">[1]</a>, when independent random variables are added, their normalized sum tends toward a Gaussian distribution. We can use this theorem to define the Gaussianity of a distribution in terms of entropy, the distribution with the highest entropy being the Gaussian distribution. The entropy of a random variable <span  class="math">\(y\)</span> with the density function <span  class="math">\(p(y)\)</span> is defined as follow:</p>
-
-<p><span  class="math">\[H(y) = -\mathop{\mathbb{E}}\{\log{p_{i}(y)}\}\]</span></p>
-
+<!-- raw HTML omitted -->
+<p>However, this measure is extremely sensitive to outliers and is not a robust way to determine the non-Gaussianity of a distribution.
+According to the <strong>Central Limit Theorem</strong><a href="https://mitocw.ups.edu.ec/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading6b.pdf">[1]</a>, when independent random variables are added, their normalized sum tends toward a Gaussian distribution. We can use this theorem to define the Gaussianity of a distribution in terms of entropy, the distribution with the highest entropy being the Gaussian distribution. The entropy of a random variable $$y$$ with the density function $$p(y)$$ is defined as follow:</p>
+<p>$$H(y) = -\mathop{\mathbb{E}}{\log{p_{i}(y)}}$$</p>
 <p>Based on the property of the Gaussian distribution in terms of entropy and on the above definition of the entropy, we can define the <strong>negentropy</strong> as follow:</p>
-
-<p><span  class="math">\[J(y) = H(y_{G}) - H(y)\]</span></p>
-
-<p>where <span  class="math">\(y_{G}\)</span> is a Gaussian variable with the same variance as <span  class="math">\(y\)</span>.<br>
-Gaussian distribution being the distribution with the highest entropy, <span  class="math">\(H(y_{G})\)</span> &gt; <span  class="math">\(H(y)\)</span> with the assumption that <span  class="math">\(y\)</span> is not Gaussian (which is the case in the cocktail party problem). Therefore, to find the most non-Gaussian <span  class="math">\(y\)</span> we have to maximize <span  class="math">\(J(y)\)</span>. However, in practice we can't directly maximize the negentropy as it is computationally expensive. Instead, we try to <strong>maximize an approximation of the negentropy</strong>. The negentropy approximation used by FastICA is the following:</p>
-
-<p><span  class="math">\[J(y) \approx [\mathop{\mathbb{E}}\{G(y)\} - \mathop{\mathbb{E}}\{G(g)\}]^2\]</span></p>
-
-<p>where <span  class="math">\(G\)</span> is a non-quadratic function, <span  class="math">\(y\)</span> a zero mean and unit variance variable and <span  class="math">\(g\)</span> a Gaussian zero mean and unit variance variable. In the case of FastICA, <span  class="math">\(G(x) = \log\cosh(x)\)</span>.<br>
-Moreover, since <span  class="math">\(\mathop{\mathbb{E}}\{G(g)\}\)</span> is contant, we just have to maximize <span  class="math">\(\mathop{\mathbb{E}}\{G(y)\}\)</span> in order to maximize <span  class="math">\(J(y)\)</span>. That's where FastICA comes into play !</p>
-
+<p>$$J(y) = H(y_{G}) - H(y)$$</p>
+<p>where $$y_{G}$$ is a Gaussian variable with the same variance as $$y$$.
+Gaussian distribution being the distribution with the highest entropy, $$H(y_{G})$$ &gt; $$H(y)$$ with the assumption that $$y$$ is not Gaussian (which is the case in the cocktail party problem). Therefore, to find the most non-Gaussian $$y$$ we have to maximize $$J(y)$$. However, in practice we can&rsquo;t directly maximize the negentropy as it is computationally expensive. Instead, we try to <strong>maximize an approximation of the negentropy</strong>. The negentropy approximation used by FastICA is the following:</p>
+<p>$$J(y) \approx [\mathop{\mathbb{E}}{G(y)} - \mathop{\mathbb{E}}{G(g)}]^2$$</p>
+<p>where $$G$$ is a non-quadratic function, $$y$$ a zero mean and unit variance variable and $$g$$ a Gaussian zero mean and unit variance variable. In the case of FastICA, $$G(x) = \log\cosh(x)$$.
+Moreover, since $$\mathop{\mathbb{E}}{G(g)}$$ is contant, we just have to maximize $$\mathop{\mathbb{E}}{G(y)}$$ in order to maximize $$J(y)$$. That&rsquo;s where FastICA comes into play !</p>
 <h1 id="fastica">FastICA</h1>
-
-<p>Let <span  class="math">\(X\)</span> be the input data matrix of size <span  class="math">\(N\)</span> x <span  class="math">\(M\)</span>, <span  class="math">\(w\)</span> a weight vector of size <span  class="math">\(N\)</span> and <span  class="math">\(C\)</span> the number of components. We want to find the matrix <span  class="math">\(W\)</span> of size <span  class="math">\(N\)</span> x <span  class="math">\(C\)</span> that will project <span  class="math">\(X\)</span> onto independent component (i.e. <span  class="math">\(W^{T}X =\)</span> matrix with independent components).</p>
-
-<p>For FastICA to work we need to make sure that <span  class="math">\(\mathop{\mathbb{E}}\{XX^{T}\} = I\)</span>. We accomplish this by centering and whitening the input data matrix <span  class="math">\(X\)</span>. To center <span  class="math">\(X\)</span>, we subtract to each of its column the mean value of the column:</p>
-
-<p><span  class="math">\[x_{ij} = x_{ij} - \frac{1}{M}\sum_{k}x_{ik}\]</span></p>
-
-<p>To whiten <span  class="math">\(X\)</span>, we perform an eigenvalue decomposition on the covariance matrix of the centered <span  class="math">\(X\)</span>:</p>
-
-<p><span  class="math">\[X = D^{\frac{-1}{2}}E^{T}X\]</span></p>
-
-<p>where <span  class="math">\(D\)</span> is the diagonal matrix of eigenvalues and <span  class="math">\(E\)</span> the matrix of eigenvectors.</p>
-
+<p>Let $$X$$ be the input data matrix of size $$N$$ x $$M$$, $$w$$ a weight vector of size $$N$$ and $$C$$ the number of components. We want to find the matrix $$W$$ of size $$N$$ x $$C$$ that will project $$X$$ onto independent component (i.e. $$W^{T}X =$$ matrix with independent components).</p>
+<p>For FastICA to work we need to make sure that $$\mathop{\mathbb{E}}{XX^{T}} = I$$. We accomplish this by centering and whitening the input data matrix $$X$$. To center $$X$$, we subtract to each of its column the mean value of the column:</p>
+<p>$$x_{ij} = x_{ij} - \frac{1}{M}\sum_{k}x_{ik}$$</p>
+<p>To whiten $$X$$, we perform an eigenvalue decomposition on the covariance matrix of the centered $$X$$:</p>
+<p>$$X = D^{\frac{-1}{2}}E^{T}X$$</p>
+<p>where $$D$$ is the diagonal matrix of eigenvalues and $$E$$ the matrix of eigenvectors.</p>
 <p>In this setting we have:</p>
-
-<p><span  class="math">\[y = w^{T}X\]</span></p>
-
-<p><span  class="math">\[J(w^{T}X) \approx [\mathop{\mathbb{E}}\{G(w^{T}X)\} - \mathop{\mathbb{E}}\{G(g)\}]^2\]</span></p>
-
-<p>The problem is now to find the unit vector <span  class="math">\(w\)</span> so that <span  class="math">\(w^{T}X\)</span> maximizes the non-Gaussianity. We can achieve that by using an approximative iteration of <strong>Newton's Method</strong> defined by:</p>
-
-<p><span  class="math">\[w_{p} = w_{p} - \frac{J'(w_{p}^{T}X)}{J''(w_{p}^{T}X)}\]</span></p>
-
-<p>To do so, we have to compute the gradient and the derivative of the gradient  of <span  class="math">\(J(w_{p}^{T}X)\)</span> according to <span  class="math">\(w_{p}\)</span>. We have:</p>
-
-<p><span  class="math">\[J'(w_{p}^{T}X) \propto \mathop{\mathbb{E}}\{XG'(w_{p}^{T}X)\}\]</span></p>
-
-<p><span  class="math">\[J''(w_{p}^{T}X) \propto \mathop{\mathbb{E}}\{XX^{T}G''(w_{p}^{T}X)\}\]</span></p>
-
-<p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>, we cannot use directly this gradient. We have to add <span  class="math">\(w_{p}\)</span> multiplied by a constant <span  class="math">\(\alpha\)</span>. We obtain:</p>
-
-<p><span  class="math">\[J'(w_{p}^{T}X) \propto \mathop{\mathbb{E}}\{XG'(w_{p}^{T}X)\} + \alpha w_{p}\]</span></p>
-
-<p><span  class="math">\[J''(w_{p}^{T}X) \propto \mathop{\mathbb{E}}\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I\]</span></p>
-
-<p>The approximative Newton's iteration becomes:</p>
-
-<p><span  class="math">\[w_{p} = w_{p} - \frac{\mathop{\mathbb{E}}\{XG'(w_{p}^{T}X)\} + \alpha w_{p}}{\mathop{\mathbb{E}}\{XX^{T}G''(w_{p}^{T}X)\} + \alpha I}\]</span></p>
-
-<p>With the assumption that <span  class="math">\(X\)</span> has been centered and whitened and that <span  class="math">\(\mathop{\mathbb{E}}\{XX^{T}G''(w_{p}^{T}X)\} \approx \mathop{\mathbb{E}}\{XX^{T}\}\mathop{\mathbb{E}}\{G''(w_{p}^{T}X)\}\)</span>, it can be simplified to:</p>
-
-<p><span  class="math">\[w_{p} = \mathop{\mathbb{E}}\{XG'(w_{p}^{T}X)\} - \mathop{\mathbb{E}}\{G''(w_{p}^{T}X)\}w_{p}\]</span></p>
-
-<p>We now have a one-unit algorithm to solve the cocktail party problem. But, we don't want to estimate only one independent component but multiple ones. A method, is to add after the Newton's iteration a <strong>deflationary orthogonalization</strong> step defined by:</p>
-
-<p><span  class="math">\[w_{p} = w_{p} - \sum_{i=1}^{p-1}(w_{p}^{T}w_{i})w_{i}\]</span></p>
-
+<p>$$y = w^{T}X$$</p>
+<p>$$J(w^{T}X) \approx [\mathop{\mathbb{E}}{G(w^{T}X)} - \mathop{\mathbb{E}}{G(g)}]^2$$</p>
+<p>The problem is now to find the unit vector $$w$$ so that $$w^{T}X$$ maximizes the non-Gaussianity. We can achieve that by using an approximative iteration of <strong>Newton&rsquo;s Method</strong> defined by:</p>
+<p>$$w_{p} = w_{p} - \frac{J'(w_{p}^{T}X)}{J''(w_{p}^{T}X)}$$</p>
+<p>To do so, we have to compute the gradient and the derivative of the gradient  of $$J(w_{p}^{T}X)$$ according to $$w_{p}$$. We have:</p>
+<p>$$J'(w_{p}^{T}X) \propto \mathop{\mathbb{E}}{XG'(w_{p}^{T}X)}$$</p>
+<p>$$J''(w_{p}^{T}X) \propto \mathop{\mathbb{E}}{XX^{T}G''(w_{p}^{T}X)}$$</p>
+<p>For the reasons explained on page 188 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>, we cannot use directly this gradient. We have to add $$w_{p}$$ multiplied by a constant $$\alpha$$. We obtain:</p>
+<p>$$J'(w_{p}^{T}X) \propto \mathop{\mathbb{E}}{XG'(w_{p}^{T}X)} + \alpha w_{p}$$</p>
+<p>$$J''(w_{p}^{T}X) \propto \mathop{\mathbb{E}}{XX^{T}G''(w_{p}^{T}X)} + \alpha I$$</p>
+<p>The approximative Newton&rsquo;s iteration becomes:</p>
+<p>$$w_{p} = w_{p} - \frac{\mathop{\mathbb{E}}{XG'(w_{p}^{T}X)} + \alpha w_{p}}{\mathop{\mathbb{E}}{XX^{T}G''(w_{p}^{T}X)} + \alpha I}$$</p>
+<p>With the assumption that $$X$$ has been centered and whitened and that $$\mathop{\mathbb{E}}{XX^{T}G''(w_{p}^{T}X)} \approx \mathop{\mathbb{E}}{XX^{T}}\mathop{\mathbb{E}}{G''(w_{p}^{T}X)}$$, it can be simplified to:</p>
+<p>$$w_{p} = \mathop{\mathbb{E}}{XG'(w_{p}^{T}X)} - \mathop{\mathbb{E}}{G''(w_{p}^{T}X)}w_{p}$$</p>
+<p>We now have a one-unit algorithm to solve the cocktail party problem. But, we don&rsquo;t want to estimate only one independent component but multiple ones. A method, is to add after the Newton&rsquo;s iteration a <strong>deflationary orthogonalization</strong> step defined by:</p>
+<p>$$w_{p} = w_{p} - \sum_{i=1}^{p-1}(w_{p}^{T}w_{i})w_{i}$$</p>
 <p>More details can be found on page 192-194 of <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">[2]</a>.</p>
-
 <h2 id="algorithm">Algorithm</h2>
-
 <p>The complete algorithm will then look like this:</p>
-
 <ol>
-<li>Center the matrix <span  class="math">\(X\)</span><br></li>
-<li>Whiten the matrix <span  class="math">\(X\)</span><br></li>
-<li>Create a matrix <span  class="math">\(W\)</span> that will contain all the <span  class="math">\(w_{p}\)</span><br></li>
-<li>Repeat steps C times<br>
-4.1 Create a random vector of weight <span  class="math">\(w_{p}\)</span> of size <span  class="math">\(N\)</span><br>
-4.2 Perform a newton iteration on <span  class="math">\(w_{p}\)</span><br>
-4.3 Perform a deflationary orthogonalization on <span  class="math">\(w_{p}\)</span> using the current <span  class="math">\(W\)</span><br>
-4.4 Normalize <span  class="math">\(w_{p}\)</span><br>
-4.5 If <span  class="math">\(w_{p}\)</span> is still changing go back to step 4.2<br>
-4.6 Put <span  class="math">\(w_{p}\)</span> in <span  class="math">\(W\)</span><br></li>
-<li>Compute and return <span  class="math">\(W^{T}X\)</span><br>
-<br></li>
+<li>Center the matrix $$X$$</li>
+<li>Whiten the matrix $$X$$</li>
+<li>Create a matrix $$W$$ that will contain all the $$w_{p}$$</li>
+<li>Repeat steps C times
+4.1 Create a random vector of weight $$w_{p}$$ of size $$N$$
+4.2 Perform a newton iteration on $$w_{p}$$
+4.3 Perform a deflationary orthogonalization on $$w_{p}$$ using the current $$W$$
+4.4 Normalize $$w_{p}$$
+4.5 If $$w_{p}$$ is still changing go back to step 4.2
+4.6 Put $$w_{p}$$ in $$W$$</li>
+<li>Compute and return $$W^{T}X$$</li>
 </ol>
-
 <h2 id="implementation">Implementation</h2>
-
 <p>The implementation of the above algorithm is straightforward using Python and the Numpy library.</p>
-
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <span class="c1"># Definition of G&#39;</span>
@@ -251,24 +197,24 @@ Moreover, since <span  class="math">\(\mathop{\mathbb{E}}\{G(g)\}\)</span> is co
 <span class="c1"># Center matrix X</span>
 <span class="k">def</span> <span class="nf">centerMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
     <span class="n">mean</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="err">@</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
     <span class="k">return</span> <span class="n">M</span>
 
 <span class="c1"># Whiten matrix X with eigenvalue decomposition</span>
 <span class="k">def</span> <span class="nf">whitenMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="n">D</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">X</span> <span class="err">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-    <span class="n">DE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span><span class="p">))</span> <span class="err">@</span> <span class="n">E</span><span class="o">.</span><span class="n">T</span>
-    <span class="k">return</span> <span class="n">DE</span> <span class="err">@</span> <span class="n">X</span>
+    <span class="n">D</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">DE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span><span class="p">))</span> <span class="o">@</span> <span class="n">E</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">DE</span> <span class="o">@</span> <span class="n">X</span>
 
 <span class="c1"># One-unit algorithm step</span>
 <span class="k">def</span> <span class="nf">oneUnit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">wp</span><span class="p">):</span>
-    <span class="n">term1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">X</span> <span class="err">@</span> <span class="n">Gprime</span><span class="p">(</span><span class="n">wp</span> <span class="err">@</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">term2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Gsecond</span><span class="p">(</span><span class="n">wp</span> <span class="err">@</span> <span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">wp</span>
+    <span class="n">term1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">X</span> <span class="o">@</span> <span class="n">Gprime</span><span class="p">(</span><span class="n">wp</span> <span class="o">@</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">term2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Gsecond</span><span class="p">(</span><span class="n">wp</span> <span class="o">@</span> <span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">wp</span>
     <span class="k">return</span> <span class="n">term1</span> <span class="o">-</span> <span class="n">term2</span>
 
 <span class="c1"># Deflationary orthogonalization</span>
 <span class="k">def</span> <span class="nf">orthogonalize</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">wp</span> <span class="o">-</span> <span class="p">((</span><span class="n">wp</span> <span class="err">@</span> <span class="n">W</span><span class="p">[:</span><span class="n">i</span><span class="p">,:]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="err">@</span> <span class="n">W</span><span class="p">[:</span><span class="n">i</span><span class="p">,:])</span>
+    <span class="k">return</span> <span class="n">wp</span> <span class="o">-</span> <span class="p">((</span><span class="n">wp</span> <span class="o">@</span> <span class="n">W</span><span class="p">[:</span><span class="n">i</span><span class="p">,:]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="n">W</span><span class="p">[:</span><span class="n">i</span><span class="p">,:])</span>
 
 <span class="c1"># wp normalization</span>
 <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">wp</span><span class="p">):</span>
@@ -299,15 +245,12 @@ Moreover, since <span  class="math">\(\mathop{\mathbb{E}}\{G(g)\}\)</span> is co
                 <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">wp</span>
                 <span class="k">break</span>
 
-    <span class="k">return</span> <span class="n">W</span> <span class="err">@</span> <span class="n">X</span></code></pre></div>
-
+    <span class="k">return</span> <span class="n">W</span> <span class="o">@</span> <span class="n">X</span></code></pre></div>
 <h2 id="results">Results</h2>
-
-<p>Let's now load some audio samples and see the results. Here we are going to use a dataset containing sounds coming from 9 different sources. You can find the data, the complete code and the results on <a href="https://github.com/hbenbel/FastICA">my github</a>.</p>
-
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">wavfile</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<p>Let&rsquo;s now load some audio samples and see the results. Here we are going to use a dataset containing sounds coming from 9 different sources. You can find the data, the complete code and the results on <a href="https://github.com/hbenbel/FastICA">my github</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">wavfile</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="c1"># Function to load the audio data</span>
@@ -348,18 +291,9 @@ Moreover, since <span  class="math">\(\mathop{\mathbb{E}}\{G(g)\}\)</span> is co
 <span class="n">displayData</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
 
 <span class="n">saveData</span><span class="p">(</span><span class="n">saveDataPath</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span></code></pre></div>
-
-<p><center><figure class="aligncenter">
-    <img src="/static/res.png"
-         alt="Data matrix before (left) and after (right) FastICA"/> <figcaption>
-            <p><em>Data matrix before (left) and after (right) FastICA</em></p>
-        </figcaption>
-</figure>
-</center></p>
-
+<!-- raw HTML omitted -->
 <h1 id="references">References</h1>
-
-<p>[1] <a href="https://mitocw.ups.edu.ec/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading6b.pdf">MIT OpenCourseWare on Central Limit Theorem and the Law of Large Numbers by Jeremy Orloff and Jonathan Bloom</a><br>
+<p>[1] <a href="https://mitocw.ups.edu.ec/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading6b.pdf">MIT OpenCourseWare on Central Limit Theorem and the Law of Large Numbers by Jeremy Orloff and Jonathan Bloom</a>
 [2] <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">Independent Component Analysis by Aapo Hyvarinen, Juha Karhunen and Erkki Oja</a></p>
 
 </div>
