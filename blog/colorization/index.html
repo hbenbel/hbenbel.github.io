@@ -7,7 +7,7 @@
         <meta name="description" content="Grayscale image colorization using a conditional DCGAN">
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
-        <meta name="generator" content="Hugo 0.79.0" />
+        <meta name="generator" content="Hugo 0.92.2" />
         <meta name="robots" content="index,follow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta property="og:title" content="Image Colorization">
@@ -123,115 +123,75 @@
     
 
     <h1 id="introduction">Introduction</h1>
-
 <p>Image colorization is a two century old subject which was first tackled by photographers. As early as 1839, european photographers would hand-color monochrome photographs with a mixture of pigments and gum arabic. Although it emerged in Europe, the practice of image colorization gained tremendous popularity in Japan in the 1860s as it began to be considered as a refined art.</p>
-
-<p><center><figure class="aligncenter">
-    <img src="/static/colorization/japan.png"
-         alt="Monochrome photo (left) and Hand-colored version (right) by the Japan Photographic Association (1876-1885)"/> <figcaption>
+<center><figure class="aligncenter"><img src="/static/colorization/japan.png"
+         alt="Monochrome photo (left) and Hand-colored version (right) by the Japan Photographic Association (1876-1885)"/><figcaption>
             <p><em>Monochrome photo (left) and Hand-colored version (right) by the Japan Photographic Association (1876-1885)</em></p>
         </figcaption>
 </figure>
-</center></p>
-
+</center>
 <p>In the past century, dyes, watercolors, oils, crayons and pastels have also been used to colorize photographs but none really revolutionized the practice. The creation of computers and the emergence of softwares for image editing that followed initiated a change in the way the image colorization was done. The first to introduce computerized colorization was the Canadian engineer <strong>Wilson Markle</strong> in the 1970s. His method consisted of assigning predetermined colors to shades of gray in each scene. Nowadays, we see the emergence of deep learning based approaches that allow the automatic colorization of grayscale images. At first, the researchers used <strong>CNN</strong> and it gave pretty robust results as in <a href="https://arxiv.org/pdf/1603.08511.pdf">[1]</a>. We now see more and more approches based on <strong>Generative Adversarial Networks</strong> (GAN) and more specifically <strong>Deep Convolutional Generative Adversarial Networks</strong> (DCGAN) as in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a>. Here, we are going to present a DCGAN approach to the image colorization problem.</p>
-
-<h1 id="preprocessing">Pre-processing</h1>
-
-<p>The pre-processing phase consist of three different operations: resizing, color space conversion from RGB to <strong>LAB</strong> and normalization. The resizing will be performed to have either 32x32 or 256x256 images depending on the use case. The color space conversion from RGB to LAB is performed in order to better approximate the human perception between colors. And, the normalization is performed to make sure that we have values in the range <span  class="math">\([-1, 1]\)</span> for the model training. But what is the LAB color space and why do we have to use it instead of RGB ?</p>
-
+<h1 id="pre-processing">Pre-processing</h1>
+<p>The pre-processing phase consist of three different operations: resizing, color space conversion from RGB to <strong>LAB</strong> and normalization. The resizing will be performed to have either 32x32 or 256x256 images depending on the use case. The color space conversion from RGB to LAB is performed in order to better approximate the human perception between colors. And, the normalization is performed to make sure that we have values in the range \([-1, 1]\) for the model training. But what is the LAB color space and why do we have to use it instead of RGB ?</p>
 <p>In order to quantify how similar or how different two colors are, we need a metric in the space of colors. LAB color space was historically designed so that the Euclidean distance between the coordinates of any colors in this space approximates as precisely as possible the human perception of distances between colors. That kind of color space is called <strong>perceptually uniform color space</strong>. We can, of course, apply the Euclidean distance to the RGB color space but the distance between two colors will not necessarily be higher if the colors are drastically different because RGB is not perceptually uniform.<br>
-The LAB color space is composed of three axis: the luminance/lightness (L) which is the grayscale axis, the red/green axis (a) and the yellow/blue axis (b). While L is in the range <span  class="math">\([0, 100]\)</span>, a and b are in the range <span  class="math">\([-128, 127]\)</span>.</p>
-
-<p><center><figure class="aligncenter">
-    <img src="/static/colorization/lab.png"
-         alt="LAB color space chart"/> <figcaption>
+The LAB color space is composed of three axis: the luminance/lightness (L) which is the grayscale axis, the red/green axis (a) and the yellow/blue axis (b). While L is in the range \([0, 100]\), a and b are in the range \([-128, 127]\).</p>
+<center><figure class="aligncenter"><img src="/static/colorization/lab.png"
+         alt="LAB color space chart"/><figcaption>
             <p><em>LAB color space chart</em></p>
         </figcaption>
 </figure>
-</center></p>
-
-<p>Moreover, due to the difference of ranges between the three channels of the LAB color space and in order to make sure that the values of the LAB image are in the good range for the training (i.e. <span  class="math">\([-1, 1]\)</span>), we have to divide the L channels by 100 and the a and b channels by 128. To learn more on the LAB color space and the conversion from RGB to LAB take a look at <a href="http://www.brucelindbloom.com/index.html?Math.html">this site</a>.</p>
-
+</center>
+<p>Moreover, due to the difference of ranges between the three channels of the LAB color space and in order to make sure that the values of the LAB image are in the good range for the training (i.e. \([-1, 1]\)), we have to divide the L channels by 100 and the a and b channels by 128. To learn more on the LAB color space and the conversion from RGB to LAB take a look at <a href="http://www.brucelindbloom.com/index.html?Math.html">this site</a>.</p>
 <h1 id="model">Model</h1>
-
 <p>As we are going to train a GAN, we will need two models: the generator and the discriminator. We are going to use the same architectures as in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a>. Thus, the generator will be a <strong>UNet</strong>-like model and the discriminator a simple CNN with 4 down-sampling layers similar to the contractive path of the generator.</p>
-
-<p><center><figure class="aligncenter">
-    <img src="/static/colorization/architecture2.png"
-         alt="Architecture used for the generator in [2]"/> <figcaption>
+<center><figure class="aligncenter"><img src="/static/colorization/architecture2.png"
+         alt="Architecture used for the generator in [2]"/><figcaption>
             <p><em>Architecture used for the generator in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a></em></p>
         </figcaption>
 </figure>
-</center></p>
-
+</center>
 <p>However, we made a small change in the output of the generator. Instead of outputting the three LAB channels we output only the a and b channels as in <a href="https://arxiv.org/pdf/1603.08511.pdf">[1]</a>.</p>
-
 <h1 id="loss">Loss</h1>
-
 <p>In a traditional GAN, the input of the generator is a randomly generated noise. However, in our case the generator takes a grayscale image as input instead of noise. Since no noise is introduced, the input of the generator is treated as zero noise with the grayscale image as a prior. The discriminator will get colored images from both the generator and the original data and will try to tell which image has been generated and which image is the original one. This is what is called a <strong>Conditional Generative Adversarial Network</strong>.<br>
 In a formal way, the cost functions with <strong>L1 Regularization</strong> are defined as follow:</p>
-
-<p><span  class="math">\[\min_{\theta_{G}} J^{(G)}(\theta_{D}, \theta_{G}) = \min_{\theta_{G}} -\mathop{\mathbb{E}}_{z}[log(D(G(0_{z}|x))] + \lambda\left \|  G(0_{z}|x) -y\right \|_{1}\]</span></p>
-
-<p><span  class="math">\[\max_{\theta_{D}} J^{(D)}(\theta_{D}, \theta_{G}) = \max_{\theta_{D}}(\mathop{\mathbb{E}}_{y}[log(D(y|x))] + \mathop{\mathbb{E}}_{z}[log(1 - D(G(0_{z}|x)|x))])
-\]</span></p>
-
+<p>$$\min_{\theta_{G}} J^{(G)}(\theta_{D}, \theta_{G}) = \min_{\theta_{G}} -\mathop{\mathbb{E}}_{z}[log(D(G(0_{z}|x))] + \lambda ||  G(0_{z}|x) -y ||_{1}$$</p>
+<p>$$\max_{\theta_{D}} J^{(D)}(\theta_{D}, \theta_{G}) = \max_{\theta_{D}}(\mathop{\mathbb{E}}_{y}[log(D(y|x))]+ \mathop{\mathbb{E}}_{z}[log(1 - D(G(0_{z}|x)|x))])$$</p>
 <p>In practice, we can define them as follow:</p>
-
-<p><span  class="math">\[G_{loss} = BCELoss(G(x), 1) + \lambda \cdot L1Loss(G(x), y)\]</span></p>
-
-<p><span  class="math">\[D_{loss} = BCELoss(D(y), 1) + BCELoss(D(G(x)), 0)\]</span></p>
-
-<p>Where <span  class="math">\(1\)</span> is the &quot;real&quot; label, <span  class="math">\(0\)</span> is the &quot;fake&quot; label, <span  class="math">\(x\)</span> the grayscale input image and <span  class="math">\(y\)</span> the a and b channels of the orignal image in the LAB color space.</p>
-
-<h1 id="postprocessing">Post-processing</h1>
-
+<p>$$G_{loss} = BCELoss(G(x), 1) + \lambda \cdot L1Loss(G(x), y)$$</p>
+<p>$$D_{loss} = BCELoss(D(y), 1) + BCELoss(D(G(x)), 0)$$</p>
+<p>Where \(1\) is the &ldquo;real&rdquo; label, \(0\) is the &ldquo;fake&rdquo; label, \(x\) the grayscale input image and \(y\) the a and b channels of the orignal image in the LAB color space.</p>
+<h1 id="post-processing">Post-processing</h1>
 <p>The post-processing consist of three simple steps. First, we retrieve the output of the model, which are the predicted a and b channels, and we stack the input grayscale image on top of this output. We then multiply the L channel by 100 and the a and b channels by 128 in order to obtain a proper LAB image. Finally we convert the LAB image to RGB.</p>
-
 <h1 id="configuration--results">Configuration &amp; Results</h1>
-
-<p>The model has been trained using a Kaggle GPU Notebook with the <strong>CIFAR-10 Dataset</strong><a href="https://www.cs.toronto.edu/~kriz/cifar.html">[3]</a>. We splitted the data into 80% for training, 10% for validation and 10% for testing. We used almost the same configuration as in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a>: a batch size of 128; <strong>Adam optimizer</strong> with a learning rate of 0.0002, a <span  class="math">\(\beta_{1}\)</span> of 0.5 and a <span  class="math">\(\beta_{2}\)</span> of 0.999; a <span  class="math">\(\lambda\)</span> of 100 and an early stopping patience of 5. We launched the training for 200 epochs and it stopped, due to the early stopping patience, at the epoch 19. The code has been written in Python and Pytorch and it can be found on <a href="https://github.com/hbenbel/Colorization">my github</a>. Note that, due to the lack of VRAM, we used FP32 precision (float) instead of FP64 precision (double) that is present in the code. Below you can see some of the results on the testing set with the original 32x32 image on the left and the colorized 32x32 image on the right:</p>
-
-<p><center><figure class="aligncenter">
-    <img src="/static/colorization/4432.png"/> 
+<p>The model has been trained using a Kaggle GPU Notebook with the <strong>CIFAR-10 Dataset</strong><a href="https://www.cs.toronto.edu/~kriz/cifar.html">[3]</a>. We splitted the data into 80% for training, 10% for validation and 10% for testing. We used almost the same configuration as in <a href="https://arxiv.org/pdf/1803.05400.pdf">[2]</a>: a batch size of 128; <strong>Adam optimizer</strong> with a learning rate of 0.0002, a \(\beta_{1}\) of 0.5 and a \(\beta_{2}\) of 0.999; a \(\lambda\) of 100 and an early stopping patience of 5. We launched the training for 200 epochs and it stopped, due to the early stopping patience, at the epoch 19. The code has been written in Python and Pytorch and it can be found on <a href="https://github.com/hbenbel/Colorization">my github</a>. Note that, due to the lack of VRAM, we used FP32 precision (float) instead of FP64 precision (double) that is present in the code. Below you can see some of the results on the testing set with the original 32x32 image on the left and the colorized 32x32 image on the right:</p>
+<center><figure class="aligncenter"><img src="/static/colorization/4432.png"/>
 </figure>
-</center><br>
-<center><figure class="aligncenter">
-    <img src="/static/colorization/4553.png"/> 
+</center>
+<center><figure class="aligncenter"><img src="/static/colorization/4553.png"/>
 </figure>
-</center><br>
-<center><figure class="aligncenter">
-    <img src="/static/colorization/4594.png"/> 
+</center>
+<center><figure class="aligncenter"><img src="/static/colorization/4594.png"/>
 </figure>
-</center><br>
-<center><figure class="aligncenter">
-    <img src="/static/colorization/4600.png"/> 
+</center>
+<center><figure class="aligncenter"><img src="/static/colorization/4600.png"/>
 </figure>
-</center><br>
-<center><figure class="aligncenter">
-    <img src="/static/colorization/4601.png"/> 
+</center>
+<center><figure class="aligncenter"><img src="/static/colorization/4601.png"/>
 </figure>
-</center><br>
-<center><figure class="aligncenter">
-    <img src="/static/colorization/4654.png"/> 
+</center>
+<center><figure class="aligncenter"><img src="/static/colorization/4654.png"/>
 </figure>
-</center><br>
-<center><figure class="aligncenter">
-    <img src="/static/colorization/4655.png"/> 
+</center>
+<center><figure class="aligncenter"><img src="/static/colorization/4655.png"/>
 </figure>
-</center><br>
-<center><figure class="aligncenter">
-    <img src="/static/colorization/4658.png"/> 
+</center>
+<center><figure class="aligncenter"><img src="/static/colorization/4658.png"/>
 </figure>
-</center><br>
-<center><figure class="aligncenter">
-    <img src="/static/colorization/4667.png"/> 
+</center>
+<center><figure class="aligncenter"><img src="/static/colorization/4667.png"/>
 </figure>
-</center></p>
-
+</center>
 <h1 id="references">References</h1>
-
 <p>[1] <a href="https://arxiv.org/pdf/1603.08511.pdf">Colorful Image Colorization by Richard Zhang, Philip Isola and Alexei A. Efros</a><br>
 [2] <a href="https://arxiv.org/pdf/1803.05400.pdf">Image Colorization using Generative Adversarial Networks by Kamyar Nazeri, Eric Ng and Mehran Ebrahimi</a><br>
 [3] <a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 Dataset</a></p>
@@ -269,10 +229,10 @@ In a formal way, the cost functions with <strong>L1 Regularization</strong> are 
         <script src="https://hbenbel.github.io/js/jquery-1.11.3.min.js"></script>
         <script src="https://hbenbel.github.io/js/jquery.fitvids.js"></script>
         <script src="https://hbenbel.github.io/js/scripts.js"></script>
-    </body>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
     onload="renderMathInElement(document.body);"></script>
+    </body>
 </html>
 
