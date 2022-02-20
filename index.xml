@@ -7,15 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Hussem Ben Belgacem</copyright>
-    <lastBuildDate>Mon, 15 Feb 2021 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 20 Feb 2022 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Eulerian Video Magnification</title>
       <link>https://hbenbel.github.io/blog/evm/</link>
-      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      <pubDate>Sun, 20 Feb 2022 00:42:00 +0000</pubDate>
       
       <guid>https://hbenbel.github.io/blog/evm/</guid>
-      <description>Writing in progress&amp;hellip;
-References [1] Eulerian Video Magnification for Revealing Subtle Changes in the World</description>
+      <description>Introduction Human visual perception can be extremely limited compared to the rest of the animal kingdom. We don&amp;rsquo;t see the entire color spectrum and we can hardly perceive tiny movements thus missing potentially important information from our environment. In 2012, Hao-Yu Wu and his team pusblished the paper Eulerian Video Magnification for Revealing Subtle Changes in the World containing a method that allows us to amplify colors and motions from a simple video to help us visualize imperceptible changes from the world around us.</description>
     </item>
     
     <item>

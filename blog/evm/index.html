@@ -85,7 +85,7 @@
         <p class="post-description" itemprop="description">Colors and motions magnification</p>
     
     <p class="post-date">
-        <span>Published <time datetime="2021-02-15" itemprop="datePublished">Mon, 15 Feb, 2021</time></span>
+        <span>Published <time datetime="2022-02-20" itemprop="datePublished">Sun, 20 Feb, 2022</time></span>
         <span>by</span>
         <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
             <span itemprop="name">
@@ -95,7 +95,7 @@
     </p>
     
         <p class="post-reading post-line">
-            <span>Estimated reading time: 1 min</span>
+            <span>Estimated reading time: 8 min</span>
         </p>
     
 </header>
@@ -106,7 +106,6 @@
                 <a href="/tags/algorithm/">algorithm</a>, 
                 <a href="/tags/color-magnification/">color-magnification</a>, 
                 <a href="/tags/motion-magnification/">motion-magnification</a>, 
-                <a href="/tags/machine-learning/">machine-learning</a>, 
                 <a href="/tags/papers-discovery/">papers-discovery</a>
         </p>
     <div class="share">
@@ -120,9 +119,117 @@
         <div class="post-content clearfix" itemprop="articleBody">
     
 
-    <p>Writing in progress&hellip;</p>
+    <h1 id="introduction">Introduction</h1>
+<p>Human visual perception can be extremely limited compared to the rest of the animal kingdom. We don&rsquo;t see the entire color spectrum and we can hardly perceive tiny movements thus missing potentially important information from our environment. In 2012, Hao-Yu Wu and his team pusblished the paper <a href="https://people.csail.mit.edu/mrub/papers/vidmag.pdf">Eulerian Video Magnification for Revealing Subtle Changes in the World</a> containing a method that allows us to amplify colors and motions from a simple video to help us visualize imperceptible changes from the world around us. Here, we present this method and provide a simple implementation of the algorithm.</p>
+<h3 id="yiq-color-space">YIQ Color Space</h3>
+<p>The first step of the magnification algorithm is to convert RGB images composing the input video to <strong>YIQ</strong>. The <strong>Y</strong> component represents the brightness, <strong>I</strong> and <strong>Q</strong> represent the chrominance (i.e. the color information). This color space allows us to influence the colors of an image independently from its brightness. The conversion from RGB to YIQ can be done with the following formula:<br>
+$$\begin{bmatrix}Y \\ I \\ Q\end{bmatrix} = \begin{bmatrix}0.299 &amp; 0.587 &amp; 0.114 \\ 0.59590059 &amp; -0.27455667 &amp; -0.32134392 \\ 0.21153661 &amp; -0.52273617 &amp;  0.31119955\end{bmatrix}\begin{bmatrix}R \\ G \\ B\end{bmatrix}$$</p>
+<h1 id="colors-magnification">Colors Magnification</h1>
+<h3 id="gaussian-pyramids">Gaussian Pyramids</h3>
+<p>For the colors magnification we need to construct a <strong>Gaussian Pyramid</strong> of level \(l\) for each frame of the input video. This is done by taking the YIQ version of the original frame and <strong>downsampling</strong> it by a factor 2 for each new level of the pyramid.<br>
+The first step of the downsampling is to apply to the image a <strong>2D Convolution</strong> with the following <strong>5x5 Gaussian Kernel</strong>:<br>
+$$G_{k} = \frac{1}{256}\begin{bmatrix}1 &amp; 4 &amp; 6 &amp; 4 &amp; 1\\4 &amp; 16 &amp; 24 &amp; 16 &amp; 4\\6 &amp; 24 &amp; 36 &amp; 24 &amp; 6\\4 &amp; 16 &amp; 24 &amp; 16 &amp; 4\\1 &amp; 4 &amp; 6 &amp; 4 &amp; 1\end{bmatrix}$$<br>
+Once the convolution is done, we keep only 1 in 2 pixels in the rows and columns of the image giving us a downsampled image with height and width divided by 2 compared to the previous level of the pyramid. We do this process \(l - 1\) times.</p>
+<center><figure class="aligncenter"><img src="/static/evm/gaussianpyramid.png"
+         alt="Gaussian Pyramid Levels Visualisation"/><figcaption>
+            <p><em>Gaussian Pyramid Levels Visualisation</em></p>
+        </figcaption>
+</figure>
+</center>
+<p>Note that for the next steps of the colors magnification we keep only the last level of the pyramid. More precisely we will use the <strong>upsampled</strong> version of the last level of the pyramid. To obtain this upsampled image, we take the last level of the pyramid, add one pixel set to \(0\) every 2 pixels in the rows and columns of the downsampled image and apply \(G_{k}\). We obtain an image with height and width multiplied by 2 compared to the previously upsampled image. We do this process \(l - 1\) times i.e. until obtaining an upsampled image with the same dimension as the original image.</p>
+<center><figure class="aligncenter"><img src="/static/evm/blurred.png"
+         alt="Original Image (left) and Upsampled Image from Gaussian Pyramid with \(l = 3\) (right)"/><figcaption>
+            <p><em>Original Image (left) and Upsampled Image from Gaussian Pyramid with \(l = 3\) (right)</em></p>
+        </figcaption>
+</figure>
+</center>
+<h3 id="ideal-temporal-filter">Ideal Temporal Filter</h3>
+<p>The next and most important step is to filter the Gaussian Pyramid in order to keep only the pixels within our <strong>frequency band of interest \([\omega_{l}, \omega_{h}]\)</strong>. For that, we need to switch from the spatial domain (our image) to the frequency domain using a <strong>Fourier Transform</strong> (see <a href="https://homepages.inf.ed.ac.uk/rbf/HIPR2/fourier.htm">[2]</a> for more details).</p>
+<center><figure class="aligncenter"><img src="/static/evm/fft_domain.png"
+         alt="Original Image (left) and Its Magnitude Spectrum in the Frequency Domain (right)"/><figcaption>
+            <p><em>Original Image (left) and Its Magnitude Spectrum in the Frequency Domain (right)</em></p>
+        </figcaption>
+</figure>
+</center>
+<p>In the frequency domain we keep only the frequencies withnin the \([\omega_{l}, \omega_{h}]\) range and set the other frequencies to \(0\). Then we can apply the <strong>Inverse Fourier Transform</strong> to retrieve a filtered image. Note that the result of an Inverse Fourier Transform is a matrix of complex numbers, we simply take the real part of each numbers of the complex matrix.<br>
+Below, you can see the result of an ideal temporal filter with \(\omega_{l} = 0.8333\) and \(\omega_{h} = 1\):</p>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/static/evm/face_fft.mp4" type="video/mp4">
+    There should have been a video here but your browser does not seem
+    to support it.
+</video>
+<h3 id="image-magnification--reconstruction">Image Magnification &amp; Reconstruction</h3>
+<p>In order to magnify the colors obtained with the filtered pyramid \(F_{p}\) we introduce a value \(\alpha\) that will act as an <strong>amplification factor</strong>. To prevent the creation of artifacts in the output image we introduce another value \(A\) that will act as an <strong>attenuation factor</strong> for the chrominance components of the image. We obtain our magnified filtered pyramid \(M_{F_{p}}\) with attenuated chrominance with the following formula:</p>
+<p>$$M_{F_{p}} = \begin{cases}\alpha F_{p}\ \text{if Y component}\\ \alpha A F_{p}\ \text{if I or Q component}\end{cases}$$</p>
+<p>Finally, we reconstruct our image by adding \(M_{F_{p}}\) to the YIQ version of the original image, converting the resulting image to RGB and limiting the values of the resulting RGB image to \([0, 255]\) for each components. We repeat the previous process for each frame of the video.</p>
+<h1 id="motions-magnification">Motions Magnification</h1>
+<h3 id="laplacian-pyramids">Laplacian Pyramids</h3>
+<p>For the motions magnification, we want to focus on the edges of the objects in the video. To do so, we use the difference between two adjacent levels of the Gaussian Pyramid i.e. a Laplacian Pyramid.</p>
+<center><figure class="aligncenter"><img src="/static/evm/laplacian_pyramid.png"
+         alt="Laplacian Pyramid Construction with \(l = 3\)"/><figcaption>
+            <p><em>Laplacian Pyramid Construction with \(l = 3\)</em></p>
+        </figcaption>
+</figure>
+</center>
+<p>For the next steps we will use all the levels of the Laplacian Pyramid.</p>
+<h3 id="butterworth-filter">Butterworth Filter</h3>
+<p>For the filtering step of the motions magnification, we want a filter that is tolerant to the frequencies outside of the given range as motions changes are not as uniform as colors changes. We will use a first order Butterworth Bandpass Filter as in <a href="https://people.csail.mit.edu/mrub/papers/vidmag.pdf">[1]</a>.</p>
+<center><figure class="aligncenter"><img src="/static/evm/butterworth.png"
+         alt="Butterworth Filter with \(\omega_{l} = 2\) and \(\omega_{h} = 4\)"/><figcaption>
+            <p><em>Butterworth Filter with \(\omega_{l} = 2\) and \(\omega_{h} = 4\)</em></p>
+        </figcaption>
+</figure>
+</center>
+<p>In practice, to filter the images we start by computing the <strong>feedforward</strong> coefficient \(b_{i}\) and the <strong>feedback</strong> coefficient \(a_{i}\) of the Butterworth filter giving \([\omega_{l}, \omega_{h}]\) as the frequency range and the frame rate of the video as the signal sampling frequency. We then use this equation:</p>
+<p>$$y[n] = \frac{1}{a_0}(b_{0}x[n] + b_{1}x[n - 1] - a_{1}y[n - 1])$$</p>
+<p>Where \(y[n]\) is the \(n^{th}\) filtered Laplacian Pyramid and \(x[n]\) the \(n^{th}\) Laplacian Pyramid.<br>
+Note that \(y[0]\) and \(x[0]\) are equal to the Laplacian Pyramid of the first frame of the video.</p>
+<h3 id="image-magnification--reconstruction-1">Image Magnification &amp; Reconstruction</h3>
+<p>Due to the fact that we are using all the levels of the Laplacian Pyramid, the magnification and reconstruction phase for the motions magnification is a little bit more complicated. First we need to dynamically adapt the amplification factor for each levels of the pyramid. To do so, we introduce the spatial wavelength \(\lambda\) representing a given level of the filtered Laplacian Pyramid \(F_{p}\). In our implementation \(\lambda\) is defined as follow:</p>
+<p>$$\lambda = \sqrt{h^{2} + w^{2}}$$</p>
+<p>Where \(h\) and \(w\) are respectively the height and the width of the considered \(F_{p}\) level. Moreover, \(\lambda\) and the amplification factor \(\alpha\) are linked by the following equation:</p>
+<p>$$(1 + \alpha)\delta(t) &lt; \frac{\lambda}{8}$$</p>
+<p>Where \(\delta(t)\) is the displacement factor (see <a href="https://people.csail.mit.edu/mrub/papers/vidmag.pdf">[1]</a> for more details). We can now introduce the cutoff spatial wavelength \(\lambda_{c}\). With \(\lambda_{c}\), we can rewrite the previous equation as follow:</p>
+<p>$$(1 + \alpha)\delta(t) = \frac{\lambda_{c}}{8} \implies \delta(t) = \frac{\frac{\lambda_{c}}{8}}{1 + \alpha}$$</p>
+<p>The potentially new amplification factor \(\alpha_{new}\) for a given \(F_{p}\) level can be obtained with:</p>
+<p>$$\alpha_{new} = \frac{\frac{\lambda}{8}}{\delta(t)} - 1$$</p>
+<p>We obtain our amplification factor for a given \(F_{p}\) level \(l\) with:</p>
+<p>$$\alpha_{l} = min(\alpha, \alpha_{new})$$</p>
+<p>Similarly to the Gaussian Pyramid magnification, we obtain our magnified filtered pyramid level \(M_{F_{p}}[l]\) with attenuated chrominance with the following formula:</p>
+<p>$$M_{F_{p}}[l] = \begin{cases}\alpha_{l} F_{p}[l]\ \text{if Y component}\\ \alpha_{l} A F_{p}[l]\ \text{if I or Q component}\end{cases}$$</p>
+<p>We repeat the previous process for all the levels (except the first and last one) of \(F_{p}\).<br>
+Finally, we reconstruct our image by upsampling all the levels of \(M_{F_{p}}\) to the dimensions of the original image, adding it to the YIQ version of the original image, converting the resulting image to RGB and limiting the values of the resulting RGB image to \([0, 255]\) for each components. We repeat the previous process for each frame of the video.</p>
+<h1 id="results">Results</h1>
+<p>The code has been written in Python and it can be found on <a href="https://github.com/hbenbel/Eulerian-Video-Magnification">my github</a>. Below you can see some results with the original video on the left side and the magnified one on the right side:</p>
+<h3 id="colors-magnification-1">Colors Magnification</h3>
+<p>\(l = 4; \alpha = 50; A = 1; \omega_{l} = 0.8333; \omega_{h} = 1\)<br>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/static/evm/face.mp4" type="video/mp4">
+    There should have been a video here but your browser does not seem
+    to support it.
+</video><br>
+\(l = 6; \alpha = 50; A = 1; \omega_{l} = 0.8333; \omega_{h} = 1\)<br>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/static/evm/face2.mp4" type="video/mp4">
+    There should have been a video here but your browser does not seem
+    to support it.
+</video></p>
+<h3 id="motions-magnification-1">Motions Magnification</h3>
+<p>\(l = 4; \alpha = 15; \lambda_{c} = 16; A = 0.1; \omega_{l} = 0.4; \omega_{h} = 3\)<br>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/static/evm/baby.mp4" type="video/mp4">
+    There should have been a video here but your browser does not seem
+    to support it.
+</video><br>
+\(l = 6; \alpha = 30; \lambda_{c} = 16; A = 0.1; \omega_{l} = 0.4; \omega_{h} = 3\)<br>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/static/evm/wrist.mp4" type="video/mp4">
+    There should have been a video here but your browser does not seem
+    to support it.
+</video></p>
 <h1 id="references">References</h1>
-<p>[1] <a href="https://people.csail.mit.edu/mrub/papers/vidmag.pdf">Eulerian Video Magnification for Revealing Subtle Changes in the World</a></p>
+<p>[1] <a href="https://people.csail.mit.edu/mrub/papers/vidmag.pdf">Eulerian Video Magnification for Revealing Subtle Changes in the World by Hao-Yu Wu, Michael Rubinstein, Eugene Shih, John Guttag, Frédo Durand and William Freeman</a><br>
+[2] <a href="https://homepages.inf.ed.ac.uk/rbf/HIPR2/fourier.htm">Fourier Transform by Robert Fisher, Simon Perkins, Ashley Walker and Erik Wolfart</a></p>
 
 </div>
 
@@ -145,7 +252,7 @@
                 </div>
 
                 <p class="footer-copyright">
-                    <span>&copy; 2021 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                    <span>&copy; 2022 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
                 </p>
                 <p class="footer-copyright">
                     <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>

@@ -7,11 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Hussem Ben Belgacem</copyright>
-    <lastBuildDate>Mon, 15 Feb 2021 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 20 Feb 2022 00:42:00 +0000</lastBuildDate><atom:link href="https://hbenbel.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>algorithm</title>
       <link>https://hbenbel.github.io/tags/algorithm/</link>
-      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      <pubDate>Sun, 20 Feb 2022 00:42:00 +0000</pubDate>
       
       <guid>https://hbenbel.github.io/tags/algorithm/</guid>
       <description></description>
@@ -20,25 +20,16 @@
     <item>
       <title>color-magnification</title>
       <link>https://hbenbel.github.io/tags/color-magnification/</link>
-      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      <pubDate>Sun, 20 Feb 2022 00:42:00 +0000</pubDate>
       
       <guid>https://hbenbel.github.io/tags/color-magnification/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>machine-learning</title>
-      <link>https://hbenbel.github.io/tags/machine-learning/</link>
-      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
-      
-      <guid>https://hbenbel.github.io/tags/machine-learning/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>motion-magnification</title>
       <link>https://hbenbel.github.io/tags/motion-magnification/</link>
-      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      <pubDate>Sun, 20 Feb 2022 00:42:00 +0000</pubDate>
       
       <guid>https://hbenbel.github.io/tags/motion-magnification/</guid>
       <description></description>
@@ -47,7 +38,7 @@
     <item>
       <title>papers-discovery</title>
       <link>https://hbenbel.github.io/tags/papers-discovery/</link>
-      <pubDate>Mon, 15 Feb 2021 00:42:00 +0000</pubDate>
+      <pubDate>Sun, 20 Feb 2022 00:42:00 +0000</pubDate>
       
       <guid>https://hbenbel.github.io/tags/papers-discovery/</guid>
       <description></description>
@@ -95,6 +86,15 @@
       <pubDate>Sun, 24 Jan 2021 00:42:00 +0000</pubDate>
       
       <guid>https://hbenbel.github.io/tags/gan/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>machine-learning</title>
+      <link>https://hbenbel.github.io/tags/machine-learning/</link>
+      <pubDate>Sun, 24 Jan 2021 00:42:00 +0000</pubDate>
+      
+      <guid>https://hbenbel.github.io/tags/machine-learning/</guid>
       <description></description>
     </item>
     

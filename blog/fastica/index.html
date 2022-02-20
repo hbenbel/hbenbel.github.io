@@ -95,7 +95,7 @@
     </p>
     
         <p class="post-reading post-line">
-            <span>Estimated reading time: 8 min</span>
+            <span>Estimated reading time: 7 min</span>
         </p>
     
 </header>
@@ -208,7 +208,8 @@ Moreover, since \(\mathop{\mathbb{E}}\{G(g)\}\) is contant, we just have to maxi
 <span class="c1"># Whiten matrix X with eigenvalue decomposition</span>
 <span class="k">def</span> <span class="nf">whitenMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
     <span class="n">D</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-    <span class="n">DE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span><span class="p">))</span> <span class="o">@</span> <span class="n">E</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">DE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span> <span class="o">+</span> <span class="mf">1e-5</span><span class="p">))</span> <span class="o">@</span> <span class="n">E</span><span class="o">.</span><span class="n">T</span>
+    
     <span class="k">return</span> <span class="n">DE</span> <span class="o">@</span> <span class="n">X</span>
 
 <span class="c1"># One-unit algorithm step</span>
@@ -225,30 +226,20 @@ Moreover, since \(\mathop{\mathbb{E}}\{G(g)\}\) is contant, we just have to maxi
 <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">wp</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">wp</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span>
 
-<span class="c1"># Function to see if wp is still updating</span>
-<span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="n">wp1</span><span class="p">,</span> <span class="n">wp2</span><span class="p">):</span>
-    <span class="n">norm1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">wp1</span><span class="p">)</span>
-    <span class="n">norm2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">wp2</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">norm1</span> <span class="o">-</span> <span class="n">norm2</span><span class="p">)</span>
 
-
-<span class="k">def</span> <span class="nf">fastICA</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fastICA</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">):</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">centerMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">whitenMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
+    
     <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">C</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
         <span class="n">wp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
-        <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">old_wp</span> <span class="o">=</span> <span class="n">wp</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
             <span class="n">wp</span> <span class="o">=</span> <span class="n">oneUnit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span>
             <span class="n">wp</span> <span class="o">=</span> <span class="n">orthogonalize</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
             <span class="n">wp</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span>
-
-            <span class="k">if</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">old_wp</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">wp</span>
-                <span class="k">break</span>
+            <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">wp</span>
 
     <span class="k">return</span> <span class="n">W</span> <span class="o">@</span> <span class="n">X</span></code></pre></div>
 <h2 id="results">Results</h2>
@@ -327,7 +318,7 @@ Moreover, since \(\mathop{\mathbb{E}}\{G(g)\}\) is contant, we just have to maxi
                 </div>
 
                 <p class="footer-copyright">
-                    <span>&copy; 2021 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                    <span>&copy; 2022 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
                 </p>
                 <p class="footer-copyright">
                     <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
