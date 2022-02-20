@@ -136,7 +136,7 @@ Once the convolution is done, we keep only 1 in 2 pixels in the rows and columns
         </figcaption>
 </figure>
 </center>
-<p>Note that for the next steps of the colors magnification we keep only the last level of the pyramid. More precisely we will use the <strong>upsampled</strong> version of the last level of the pyramid. To obtain this upsampled image, we take the last level of the pyramid, add one pixel set to \(0\) every 2 pixels in the rows and columns of the downsampled image and apply \(G_{k}\). We obtain an image with height and width multiplied by 2 compared to the previously upsampled image. We do this process \(l - 1\) times i.e. until obtaining an upsampled image with the same dimension as the original image.</p>
+<p>Note that for the next steps of the colors magnification we keep only the last level of the pyramid. More precisely we will use the <strong>upsampled</strong> version of the last level of the pyramid. To obtain this upsampled image, we take the last level of the pyramid, add one pixel set to \(0\) every 2 pixels in the rows and columns of the downsampled image and apply \(4 \times G_{k}\). We obtain an image with height and width multiplied by 2 compared to the previously upsampled image. We do this process \(l - 1\) times i.e. until obtaining an upsampled image with the same dimension as the original image.</p>
 <center><figure class="aligncenter"><img src="/static/evm/blurred.png"
          alt="Original Image (left) and Upsampled Image from Gaussian Pyramid with \(l = 3\) (right)"/><figcaption>
             <p><em>Original Image (left) and Upsampled Image from Gaussian Pyramid with \(l = 3\) (right)</em></p>
